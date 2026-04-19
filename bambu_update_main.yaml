@@ -1,268 +1,555 @@
 blueprint:
   name: Bambu Lab Print Status & Energy Tracker
-  description: >
-    Tracks a Bambu Lab 3D print and sends interactive mobile notifications to multiple devices for progress, completion, and failures. Features optional energy tracking, cost calculation, live camera snaps, quiet hours, and custom action buttons (including a smart Snooze/Mute).
+  description: 'Überwacht einen Bambu Lab 3D-Druck und sendet interaktive mobile Benachrichtigungen
+    an mehrere Geräte für Fortschritt, Abschluss und Fehler. Enthält optionale
+    Energieüberwachung, Kostenberechnung, Live-Kamera-Schnappschüsse, Ruhezeiten,
+    benutzerdefinierte Aktionsbuttons (inkl. smartem Snooze/Stummschalten),
+    Druck-Protokollierung sowie Düsen-Wartungsverfolgung für den Bambu H2D.
+
+    '
   domain: automation
   input:
-    # --- PRINTER SENSORS SECTION ---
     printer_sensors_section:
-      name: Printer Sensors
+      name: Drucker-Sensoren
       icon: mdi:printer-3d
       input:
         printer_status:
-          name: Print Status Sensor
-          description: The sensor tracking the current status of the printer.
+          name: Druckstatus-Sensor
+          description: Sensor zur Verfolgung des aktuellen Druckstatus.
           selector:
             entity:
-              domain: sensor
+              domain:
+              - sensor
+              reorder: false
+              multiple: false
         printer_progress:
-          name: Print Progress Sensor
-          description: The sensor tracking the completion percentage.
+          name: Druck-Fortschritts-Sensor
+          description: Sensor zur Anzeige des Fortschritts in Prozent.
           selector:
             entity:
-              domain: sensor
+              domain:
+              - sensor
+              reorder: false
+              multiple: false
         printer_task_name:
-          name: Task Name Sensor
-          description: The sensor showing the name of the print job.
+          name: Aufgabenname-Sensor
+          description: Sensor mit dem Namen des Druckjobs.
           selector:
             entity:
-              domain: sensor
+              domain:
+              - sensor
+              reorder: false
+              multiple: false
         printer_start_time:
-          name: Start Time Sensor
-          description: The sensor tracking when the print started.
+          name: Startzeit-Sensor
+          description: Sensor, der den Startzeitpunkt verfolgt.
           selector:
             entity:
-              domain: sensor
+              domain:
+              - sensor
+              reorder: false
+              multiple: false
         printer_end_time:
-          name: End Time Sensor
-          description: The sensor tracking when the print finished.
+          name: Endzeit-Sensor
+          description: Sensor, der das Druckende verfolgt.
           selector:
             entity:
-              domain: sensor
+              domain:
+              - sensor
+              reorder: false
+              multiple: false
         printer_remaining_time:
-          name: Remaining Time Sensor (Optional)
-          description: The sensor tracking the remaining print time (usually reported in minutes).
-          default: ""
+          name: Verbleibende Zeit (Optional)
+          description: Sensor für die verbleibende Druckzeit (meist in Minuten).
+          default: ''
           selector:
             entity:
-              domain: sensor
+              domain:
+              - sensor
+              reorder: false
+              multiple: false
         printer_weight:
-          name: Print Weight Sensor
-          description: The sensor tracking the total weight of the print in grams.
+          name: Druckobjektgewicht-Sensor
+          description: Sensor für das Gesamtgewicht des Drucks in Gramm.
           selector:
             entity:
-              domain: sensor
-              device_class: weight
+              domain:
+              - sensor
+              device_class:
+              - weight
+              reorder: false
+              multiple: false
         printer_cover_image:
-          name: Cover Image Entity
-          description: The image entity showing the print preview (Fallback if camera is missing).
+          name: Vorschaubild Entity
+          description: Bild-Entity für die Druckvorschau (Fallback ohne Kamera).
           selector:
             entity:
-              domain: image
+              domain:
+              - image
+              reorder: false
+              multiple: false
         printer_camera:
-          name: Printer Camera (Optional)
-          description: Select the live camera entity to include snapshots in notifications.
-          default: ""
+          name: Drucker-Kamera (Optional)
+          description: Live-Kamera für Schnappschüsse in Benachrichtigungen.
+          default: ''
           selector:
             entity:
-              domain: camera
-
-    # --- NOTIFICATION SETTINGS SECTION ---
+              domain:
+              - camera
+              reorder: false
+              multiple: false
     notification_settings_section:
-      name: Notification Settings
+      name: Benachrichtigungseinstellungen
       icon: mdi:bell-ring
       collapsed: true
       input:
         notify_device:
-          name: Notification Devices (Mobile App)
-          description: Select one or more mobile devices to receive the notifications.
+          name: Benachrichtigungsgeräte (Mobile App)
+          description: Wähle ein oder mehrere mobile Geräte aus.
           selector:
             device:
               integration: mobile_app
               multiple: true
         progress_interval:
-          name: Progress Notification Interval (%)
-          description: How often do you want a notification? (e.g., every 5% or 10%).
+          name: Nachrichten Fortschrittsintervall (%)
+          description: Wie oft soll benachrichtigt werden (z. B. alle 5% oder 10%).
           default: 5
           selector:
             number:
-              min: 1
-              max: 50
-              step: 1
-              unit_of_measurement: "%"
+              min: 1.0
+              max: 50.0
+              step: 1.0
+              unit_of_measurement: '%'
+              mode: slider
         enable_quiet_time:
-          name: Enable Quiet Hours
-          description: Turn on to silence progress updates during the hours below. (Print Complete/Failed will still send regardless).
+          name: Ruhezeiten aktivieren
+          description: Unterdrückt Fortschrittsmeldungen während dieser Zeiten.
+            (Die Meldung „Druck abgeschlossen/fehlgeschlagen" wird trotzdem gesendet).
           default: false
           selector:
             boolean: {}
         quiet_time_start:
-          name: Quiet Hours Start
-          description: Time to start silencing progress updates.
-          default: "22:00:00"
+          name: Beginn der Ruhezeit
+          description: Es ist an der Zeit, die Fortschrittsmeldungen stummzuschalten.
+          default: '22:00:00'
           selector:
             time: {}
         quiet_time_end:
-          name: Quiet Hours End
-          description: Time to stop silencing progress updates.
-          default: "07:00:00"
+          name: Ende der Ruhezeit
+          description: Es ist an der Zeit, die Unterdrückung von Fortschrittsmeldungen zu beenden.
+          default: 07:00:00
           selector:
             time: {}
-
-    # --- ACTION BUTTONS SECTION ---
     action_buttons_section:
-      name: Notification Action Buttons
+      name: Benachrichtigungs Aktionsbuttons
       icon: mdi:gesture-tap-button
       collapsed: true
       input:
         action_1_title:
-          name: Action 1 Title
-          description: The text for the first notification button.
-          default: "Open Bambu Handy"
+          name: Titel Aktion 1
+          description: Text für den ersten Benachrichtigungsbutton.
+          default: Bambu App öffnen
           selector:
             select:
               options:
-                - "Open Bambu Handy"
-                - "Open Home Assistant"
-                - "View Printer Dashboard"
+              - Bambu App öffnen
+              - Home Assistant öffnen
+              - Drucker-Dashboard öffnen
               custom_value: true
+              multiple: false
+              sort: false
         action_1_uri:
-          name: Action 1 URI
-          description: The URI/URL to open when Action 1 is tapped. You can select a preset or type a custom path.
-          default: "app://bbl.intl.bambulab.com"
+          name: URI Aktion 1
+          description: Die URI/URL, die geöffnet werden soll, wenn auf „Aktion 1" getippt wird. Sie können eine Voreinstellung auswählen oder einen benutzerdefinierten Pfad eingeben.
+          default: app://bbl.intl.bambulab.com
           selector:
             select:
               options:
-                - label: "Bambu Handy App"
-                  value: "app://bbl.intl.bambulab.com"
-                - label: "Home Assistant Default Dashboard"
-                  value: "/"
+              - label: Bambu Handy App
+                value: app://bbl.intl.bambulab.com
+              - label: Home Assistant Standard-Dashboard
+                value: /
               custom_value: true
+              multiple: false
+              sort: false
         action_2_camera_title:
-          name: Action 2 Title (Camera Enabled)
-          description: The text for the second button if a camera is selected.
-          default: "View Camera"
+          name: Titel Aktion 2 (mit Kamera)
+          description: Der Text für die zweite Schaltfläche, wenn eine Kamera ausgewählt ist.
+          default: Kamera anzeigen
           selector:
             select:
               options:
-                - "View Camera"
-                - "Open Bambu Handy"
-                - "Open Home Assistant"
+              - Kamera anzeigen
+              - Bambu App öffnen
+              - Home Assistant öffnen
               custom_value: true
+              multiple: false
+              sort: false
         action_2_fallback_title:
-          name: Action 2 Title (No Camera)
-          description: The text for the second button if NO camera is selected.
-          default: "Open Home Assistant"
+          name: Titel Aktion 2 (ohne Kamera)
+          description: Der Text für die zweite Schaltfläche, wenn KEINE Kamera ausgewählt ist.
+          default: Home Assistant öffnen
           selector:
             select:
               options:
-                - "Open Home Assistant"
-                - "View Printer Dashboard"
+              - Home Assistant öffnen
+              - Drucker-Dashboard öffnen
               custom_value: true
+              multiple: false
+              sort: false
         action_2_fallback_uri:
-          name: Action 2 URI (No Camera)
-          description: The URI to open if NO camera is selected. You can select a preset or type a custom path.
-          default: "/"
+          name: URI Aktion 2 (ohne Kamera)
+          description: Die URI, die geöffnet werden soll, wenn KEINE Kamera ausgewählt ist. Sie können eine
+            Voreinstellung auswählen oder einen benutzerdefinierten Pfad eingeben.
+          default: /
           selector:
             select:
               options:
-                - label: "Home Assistant Default Dashboard"
-                  value: "/"
-                - label: "Bambu Handy App"
-                  value: "app://bbl.intl.bambulab.com"
+              - label: Home Assistant Standard-Dashboard
+                value: /
+              - label: Bambu Handy App
+                value: app://bbl.intl.bambulab.com
               custom_value: true
+              multiple: false
+              sort: false
         button_3_mode:
           name: Button 3 Mode
-          description: Choose what the 3rd button does. "Mute Progress" will allow you to type a snooze time directly on your phone.
-          default: "Disabled"
+          description: Wähle aus, welche Funktion die dritte Schaltfläche haben soll. Mit „Fortschritt stummschalten" kannst
+            du die Schlummerzeit direkt auf deinem Smartphone eingeben.
+          default: Disabled
           selector:
             select:
               options:
-                - "Disabled"
-                - "Mute Progress"
-                - "Custom Action"
+              - Disabled
+              - Mute Progress
+              - Custom Action
+              multiple: false
+              custom_value: false
+              sort: false
         snooze_datetime_helper:
-          name: Snooze Helper (Optional, Recommended)
-          description: Select an 'input_datetime' helper (configured to include Date & Time). If provided, snoozing is 100% safe and will only block progress updates. If left empty, it falls back to temporarily turning off this automation.
-          default: ""
+          name: Snooze-Helfer (Optional)
+          description: Wählen Sie einen „input_datetime"-Helper aus (konfiguriert für Datum
+            und Uhrzeit). Falls angegeben, ist das Zurückstellen zu 100 % sicher und blockiert lediglich die Fortschrittsmeldungen.
+            Wird das Feld leer gelassen, wird stattdessen diese
+            Automatisierung vorübergehend deaktiviert.
+          default: ''
           selector:
             entity:
-              domain: input_datetime
+              domain:
+              - input_datetime
+              reorder: false
+              multiple: false
         button_3_custom_title:
-          name: Custom Action Title
-          description: The text for the 3rd button if "Custom Action" is selected above.
-          default: "Run Custom Action"
+          name: Titel benutzerdefinierte Aktion
+          description: Der Text für die dritte Schaltfläche, wenn oben
+            „Benutzerdefinierte Aktion" ausgewählt wurde.
+          default: Benutzerdefinierte Aktion ausführen
           selector:
-            text: {}
+            text:
+              multiline: false
+              multiple: false
         button_3_custom_action:
-          name: Custom Action Sequence
-          description: The sequence to run if the custom button is pressed. Do not limit yourself—you can run scripts, toggle entities, etc.
+          name: Benutzerdefinierte Aktion
+          description: Die Sequenz, die ausgeführt wird, wenn die benutzerdefinierte Schaltfläche gedrückt wird. Lass
+            deiner Fantasie freien Lauf – du kannst Skripte ausführen, Entitäten umschalten usw.
           default: []
           selector:
             action: {}
-
-    # --- FILAMENT TRACKING SECTION ---
     filament_tracking_section:
-      name: Filament Tracking
+      name: Filament-Tracking
       icon: mdi:printer-3d-nozzle
       collapsed: true
       input:
         filament_cost_per_kg:
-          name: Filament Cost per KG (£)
-          description: Enter the cost of your filament per kilogram (e.g., 18.99). Set to 0 to disable filament cost tracking.
-          default: 20.00
+          name: Filamentkosten pro kg (€)
+          description: Geben Sie die Kosten Ihres Filaments pro Kilogramm ein (z. B. 18.99).
+            Setzen Sie den Wert auf 0 um die Erfassung der Filamentkosten zu deaktivieren.
+          default: 20.0
           selector:
             number:
-              min: 0
+              min: 0.0
               max: 100.0
               step: 0.01
               mode: box
-
-    # --- ENERGY TRACKING & COST SECTION ---
     energy_tracking_section:
       name: Energy Tracking & Cost
       icon: mdi:lightning-bolt
       collapsed: true
       input:
         enable_energy_tracking:
-          name: Enable Energy Tracking
-          description: Toggle off if you do not have a smart plug attached to your printer. If off, you can leave the below entities blank.
+          name: Energie-Tracking & Kosten
+          description: Deaktivieren Sie diese Option, wenn an Ihrem
+            Drucker kein Smart Plug angeschlossen ist. Ist diese Option deaktiviert, können Sie die folgenden Felder leer lassen.
           default: true
           selector:
             boolean: {}
         static_electricity_price:
-          name: Static Electricity Unit Cost (£/kWh)
-          description: Enter your fixed electricity rate here. (e.g., 0.28 for 28p per kWh).
+          name: Einheitskosten für statische Elektrizität (€/kWh)
+          description: Geben Sie hier Ihren festen Stromtarif ein. (z. B. 0.28 für 28 Cent
+            pro kWh).
           default: 0.25
           selector:
             number:
-              min: 0
+              min: 0.0
               max: 2.0
               step: 0.01
               mode: box
         electricity_price_sensor:
-          name: Dynamic Electricity Price Sensor
-          description: (Optional) Select a sensor tracking dynamic electricity prices. If provided, this overrides the static cost above.
-          default: ""
-          selector:
-            entity: {}
-        energy_sensor:
-          name: Smart Plug Energy Sensor (kWh)
-          description: Total energy sensor for the smart plug attached to the printer.
-          default: ""
+          name: Dynamischer Strompreissensor
+          description: (Optional) Wählen Sie einen Sensor aus, der die dynamischen Strompreise erfasst.
+            Falls angegeben, werden die oben genannten statischen Kosten dadurch außer Kraft gesetzt.
+          default: ''
           selector:
             entity:
-              domain: sensor
-              device_class: energy
+              reorder: false
+              multiple: false
+        energy_sensor:
+          name: Smart Plug mit Energiesensor (kWh)
+          description: Gesamtverbrauchsanzeige für die am Drucker angeschlossene Smart-Steckdose.
+          default: ''
+          selector:
+            entity:
+              domain:
+              - sensor
+              device_class:
+              - energy
+              reorder: false
+              multiple: false
         start_kwh_helper:
           name: Start kWh Helper
-          description: An input_number helper to store the starting energy when the print begins.
-          default: ""
+          description: Ein „input_number"-Helper zum Speichern der Anfangsenergie, wenn der
+            Ausdruck beginnt.
+          default: ''
           selector:
             entity:
-              domain: input_number
+              domain:
+              - input_number
+              reorder: false
+              multiple: false
 
+    # -----------------------------------------------------------------------
+    # NEU: Druck-Protokollierung
+    # -----------------------------------------------------------------------
+    logging_section:
+      name: Druck-Protokollierung
+      icon: mdi:clipboard-text-clock
+      collapsed: true
+      input:
+        enable_logging:
+          name: Protokollierung aktivieren
+          description: >-
+            Speichert nach jedem abgeschlossenen oder fehlgeschlagenen Druck einen
+            detaillierten Log-Eintrag im HA-Logbuch, verknüpft mit der unten angegebenen
+            Helfer-Entität. Für Langzeitspeicherung den HA-Recorder auf eine längere
+            Aufbewahrungszeit konfigurieren (recorder → purge_keep_days).
+          default: false
+          selector:
+            boolean: {}
+        log_ha_notification:
+          name: Log als HA-Benachrichtigung anzeigen
+          description: >-
+            Zeigt den Log-Eintrag zusätzlich als persistente Benachrichtigung im
+            Home Assistant Benachrichtigungscenter an. Bleibt so lange sichtbar,
+            bis sie manuell geschlossen wird.
+          default: false
+          selector:
+            boolean: {}
+        log_helper_entity:
+          name: Log-Helfer Entität
+          description: >-
+            Einen input_text Helper anlegen (Einstellungen → Helfer → Text,
+            Max. Länge: 255). Alle Logbuch-Einträge werden mit dieser Entität
+            verknüpft und der letzte Eintrag direkt als Wert gespeichert.
+          default: ''
+          selector:
+            entity:
+              domain:
+              - input_text
+              reorder: false
+              multiple: false
+        printer_nozzle_size_sensor:
+          name: Düsengröße-Sensor (Optional)
+          description: Sensor der die aktuelle Düsengröße anzeigt (z.B. „0.4 mm").
+          default: ''
+          selector:
+            entity:
+              domain:
+              - sensor
+              reorder: false
+              multiple: false
+        printer_filament_sensors:
+          name: Aktive Filament-Slots (Optional, Mehrfachauswahl)
+          description: >-
+            Sensor „Aktiver Slot" der Bambu Lab Integration auswählen.
+            Slots mit dem Wert „Empty" werden automatisch aus dem Log
+            ausgelassen (z.B. wenn Werkzeuge verwendet werden).
+          default: []
+          selector:
+            entity:
+              domain:
+              - sensor
+              reorder: false
+              multiple: true
+        printer_bed_temp_sensor:
+          name: Druckbett-Temperatur Sensor (Optional)
+          description: >-
+            Sensor für die Druckbetttemperatur. Tipp: Für einen echten
+            Durchschnittswert über den Druck einen HA-Statistics-Sensor auf
+            Basis dieses Sensors mit mean_type=mean anlegen.
+          default: ''
+          selector:
+            entity:
+              domain:
+              - sensor
+              device_class:
+              - temperature
+              reorder: false
+              multiple: false
+        printer_nozzle_1_temp_sensor:
+          name: Düse 1 – Temperatur-Sensor (Optional)
+          description: Sensor für die Düse-1-Temperatur (Ø-Wert empfohlen, siehe Tipp oben).
+          default: ''
+          selector:
+            entity:
+              domain:
+              - sensor
+              device_class:
+              - temperature
+              reorder: false
+              multiple: false
+        printer_nozzle_2_temp_sensor:
+          name: Düse 2 – Temperatur-Sensor (Optional, H2D)
+          description: Sensor für die Düse-2-Temperatur des H2D.
+          default: ''
+          selector:
+            entity:
+              domain:
+              - sensor
+              device_class:
+              - temperature
+              reorder: false
+              multiple: false
+        printer_bed_type_sensor:
+          name: Druckbett-Typ Sensor (Optional)
+          description: Sensor der den aktuellen Druckbett-Typ bzw. die Oberfläche anzeigt.
+          default: ''
+          selector:
+            entity:
+              domain:
+              - sensor
+              reorder: false
+              multiple: false
+        printer_tool_module_sensor:
+          name: Werkzeugmodul-Sensor (Optional)
+          description: >-
+            Sensor der anzeigt ob ein Werkzeugmodul angeschlossen ist und welches
+            (z.B. Laser, Schneider). Ist kein Modul aktiv, wird dieses Feld
+            im Log ausgelassen.
+          default: ''
+          selector:
+            entity:
+              domain:
+              - sensor
+              reorder: false
+              multiple: false
+
+    # -----------------------------------------------------------------------
+    # NEU: Düsen-Wartung (H2D)
+    # -----------------------------------------------------------------------
+    nozzle_maintenance_section:
+      name: Düsen-Wartung (H2D – Linke & Rechte Düse)
+      icon: mdi:wrench-clock
+      collapsed: true
+      input:
+        enable_nozzle_tracking:
+          name: Düsen-Zeiterfassung aktivieren
+          description: >-
+            Zählt nach jedem Druck die Betriebsstunden beider Düsen und sendet
+            eine Wartungserinnerung sobald das Intervall erreicht wird.
+            Benötigt die input_number-Helper unten.
+            Hinweis: Wenn der Tool Module State „laser" oder „cutter" ist,
+            werden keine Stunden gezählt.
+          default: false
+          selector:
+            boolean: {}
+        nozzle_1_hours_helper:
+          name: Düse 1 – Betriebsstunden Helper
+          description: >-
+            input_number Helper (min: 0, max: 10000, Schrittweite: 0.01, Einheit: h)
+            für kumulierte Betriebsstunden der linken Düse.
+            Entspricht sensor.{druckername}_nozzle_temperature_left.
+          default: ''
+          selector:
+            entity:
+              domain:
+              - input_number
+              reorder: false
+              multiple: false
+        nozzle_2_hours_helper:
+          name: Düse 2 – Betriebsstunden Helper
+          description: >-
+            input_number Helper für die rechte Düse.
+            Entspricht sensor.{druckername}_nozzle_temperature_right.
+          default: ''
+          selector:
+            entity:
+              domain:
+              - input_number
+              reorder: false
+              multiple: false
+        nozzle_1_maintenance_interval:
+          name: Wartungsintervall Linke Düse (Stunden)
+          description: >-
+            Wartungserinnerung für die linke Düse nach X Betriebsstunden.
+          default: 200
+          selector:
+            number:
+              min: 10
+              max: 5000
+              step: 10
+              unit_of_measurement: h
+              mode: box
+        nozzle_2_maintenance_interval:
+          name: Wartungsintervall Rechte Düse (Stunden)
+          description: Wartungsintervall für die rechte Düse in Betriebsstunden.
+          default: 200
+          selector:
+            number:
+              min: 10
+              max: 5000
+              step: 10
+              unit_of_measurement: h
+              mode: box
+        nozzle_1_snooze_helper:
+          name: Linke Düse – Wartungs-Snooze Helper (Optional)
+          description: >-
+            input_datetime Helper (Datum + Uhrzeit) zum Zurückstellen der
+            Wartungserinnerung für die linke Düse.
+          default: ''
+          selector:
+            entity:
+              domain:
+              - input_datetime
+              reorder: false
+              multiple: false
+        nozzle_2_snooze_helper:
+          name: Rechte Düse – Wartungs-Snooze Helper (Optional)
+          description: input_datetime Helper für den Snooze der rechten Düse.
+          default: ''
+          selector:
+            entity:
+              domain:
+              - input_datetime
+              reorder: false
+              multiple: false
+
+  source_url: https://raw.githubusercontent.com/willhaggan/ha-bambu-print-tracker/main/bambu_update_main.yaml
+
+# =========================================================================
+# Variablen
+# =========================================================================
 variables:
+  # --- Bestehende Variablen ---
   printer_status_var: !input printer_status
   printer_progress_var: !input printer_progress
   printer_task_name_var: !input printer_task_name
@@ -290,320 +577,698 @@ variables:
   enable_quiet_time_var: !input enable_quiet_time
   quiet_time_start_var: !input quiet_time_start
   quiet_time_end_var: !input quiet_time_end
+  # --- Neue Variablen: Protokollierung ---
+  enable_logging_var: !input enable_logging
+  log_ha_notification_var: !input log_ha_notification
+  log_helper_entity_var: !input log_helper_entity
+  printer_nozzle_size_sensor_var: !input printer_nozzle_size_sensor
+  printer_filament_sensors_var: !input printer_filament_sensors
+  printer_bed_temp_sensor_var: !input printer_bed_temp_sensor
+  printer_nozzle_1_temp_sensor_var: !input printer_nozzle_1_temp_sensor
+  printer_nozzle_2_temp_sensor_var: !input printer_nozzle_2_temp_sensor
+  printer_bed_type_sensor_var: !input printer_bed_type_sensor
+  printer_tool_module_sensor_var: !input printer_tool_module_sensor
+  # --- Neue Variablen: Düsen-Wartung ---
+  enable_nozzle_tracking_var: !input enable_nozzle_tracking
+  nozzle_1_hours_helper_var: !input nozzle_1_hours_helper
+  nozzle_2_hours_helper_var: !input nozzle_2_hours_helper
+  nozzle_1_maintenance_interval_var: !input nozzle_1_maintenance_interval
+  nozzle_2_maintenance_interval_var: !input nozzle_2_maintenance_interval
+  nozzle_1_snooze_helper_var: !input nozzle_1_snooze_helper
+  nozzle_2_snooze_helper_var: !input nozzle_2_snooze_helper
 
 mode: parallel
 
+# =========================================================================
+# Trigger
+# =========================================================================
 trigger:
-  - trigger: state
-    entity_id: !input printer_status
-    to: "running"
-    from: "prepare"
-    id: Print Started
-  - trigger: state
-    entity_id: !input printer_status
-    to: "finish"
-    from: "running"
-    id: Print Complete
-  - trigger: state
-    entity_id: !input printer_status
-    to: "failed"
-    id: Print failed
-  - trigger: state
-    entity_id: !input printer_progress
-    id: Progress
-  - trigger: event
-    event_type: mobile_app_notification_action
-    id: App_Action
+- trigger: state
+  entity_id: !input printer_status
+  to: running
+  from: prepare
+  id: Print Started
+- trigger: state
+  entity_id: !input printer_status
+  to: finish
+  from: running
+  id: Print Complete
+- trigger: state
+  entity_id: !input printer_status
+  to: failed
+  id: Print failed
+- trigger: state
+  entity_id: !input printer_progress
+  id: Progress
+- trigger: event
+  event_type: mobile_app_notification_action
+  id: App_Action
 
+# =========================================================================
+# Aktionen
+# =========================================================================
 action:
-  - choose:
-      # --- HANDLE BUTTON CLICKS FROM NOTIFICATIONS ---
-      - conditions:
-          - condition: trigger
-            id: App_Action
-          - condition: template
-            value_template: "{{ trigger.event.data.action == 'BAMBU_MUTE_' ~ printer_status_var }}"
-        sequence:
-          - variables:
-              requested_snooze: >-
-                {% if trigger.event.data.reply_text is defined and trigger.event.data.reply_text | regex_match('^\\d+$') %}
-                  {{ trigger.event.data.reply_text | int(60) }}
-                {% else %}
-                  60
-                {% endif %}
-              remain_state: "{{ states(printer_remaining_time_var) if printer_remaining_time_var != '' else 'unknown' }}"
-              safe_snooze: >-
-                {% if remain_state not in ['unknown', 'unavailable', ''] %}
-                  {% set max_snooze = (remain_state | int(0)) - 5 %}
-                  {% set max_snooze = max_snooze if max_snooze > 0 else 1 %}
-                  {{ [requested_snooze, max_snooze] | min }}
-                {% else %}
-                  {{ requested_snooze }}
-                {% endif %}
-          
-          - choose:
-              # METHOD A: Use the safe Date/Time helper if provided (Blocks progress updates only)
-              - conditions: "{{ snooze_datetime_helper_var != '' }}"
-                sequence:
-                  - action: input_datetime.set_datetime
-                    target:
-                      entity_id: "{{ snooze_datetime_helper_var }}"
-                    data:
-                      timestamp: "{{ (now() + timedelta(minutes=requested_snooze)).timestamp() }}"
-                  - repeat:
-                      for_each: !input notify_device
-                      sequence:
-                        - variables:
-                            notify_service: >-
-                              {% set tracker = device_entities(repeat.item) | select('search', '^device_tracker\.') | first | default('') %}
-                              {% if tracker %}
-                                notify.mobile_app_{{ tracker.split('.')[1] }}
-                              {% else %}
-                                notify.mobile_app_{{ device_attr(repeat.item, 'name') | slugify | replace('-', '_') }}
-                              {% endif %}
-                        - action: "{{ notify_service }}"
-                          data:
-                            message: "clear_notification"
-                            data:
-                              tag: "{{ states(printer_task_name_var) }}"
-              
-              # METHOD B: Fallback to turning automation off (Uses safe_snooze calculation)
-              - conditions: "{{ snooze_datetime_helper_var == '' }}"
-                sequence:
-                  - action: automation.turn_off
-                    data:
-                      stop_actions: false
-                    target:
-                      entity_id: '{{ this.entity_id }}'
-                  - repeat:
-                      for_each: !input notify_device
-                      sequence:
-                        - variables:
-                            notify_service: >-
-                              {% set tracker = device_entities(repeat.item) | select('search', '^device_tracker\.') | first | default('') %}
-                              {% if tracker %}
-                                notify.mobile_app_{{ tracker.split('.')[1] }}
-                              {% else %}
-                                notify.mobile_app_{{ device_attr(repeat.item, 'name') | slugify | replace('-', '_') }}
-                              {% endif %}
-                        - action: "{{ notify_service }}"
-                          data:
-                            message: "clear_notification"
-                            data:
-                              tag: "{{ states(printer_task_name_var) }}"
-                  - delay:
-                      minutes: '{{ safe_snooze }}'
-                  - action: automation.turn_on
-                    data: {}
-                    target:
-                      entity_id: '{{ this.entity_id }}'
-      
-      # Custom Action Button Execution
-      - conditions:
-          - condition: trigger
-            id: App_Action
-          - condition: template
-            value_template: "{{ trigger.event.data.action == 'BAMBU_CUSTOM_' ~ printer_status_var }}"
-        sequence: !input button_3_custom_action
+- choose:
 
-      # --- PRINT STARTED ---
-      - conditions:
-          - condition: trigger
-            id: Print Started
+  # -----------------------------------------------------------------------
+  # App-Aktion: Fortschritt stummschalten (Snooze)
+  # -----------------------------------------------------------------------
+  - conditions:
+    - condition: trigger
+      id: App_Action
+    - condition: template
+      value_template: '{{ trigger.event.data.action == ''BAMBU_MUTE_'' ~ printer_status_var
+        }}'
+    sequence:
+    - variables:
+        requested_snooze: "{% if trigger.event.data.reply_text is defined and trigger.event.data.reply_text
+          | regex_match('^\\\\d+$') %}\n  {{ trigger.event.data.reply_text | int(60)
+          }}\n{% else %}\n  60\n{% endif %}"
+        remain_state: '{{ states(printer_remaining_time_var) if printer_remaining_time_var
+          != '''' else ''unknown'' }}'
+        safe_snooze: "{% if remain_state not in ['unknown', 'unavailable', ''] %}\n
+          \ {% set max_snooze = (remain_state | int(0)) - 5 %}\n  {% set max_snooze
+          = max_snooze if max_snooze > 0 else 1 %}\n  {{ [requested_snooze, max_snooze]
+          | min }}\n{% else %}\n  {{ requested_snooze }}\n{% endif %}"
+    - choose:
+      - conditions: '{{ snooze_datetime_helper_var != '''' }}'
         sequence:
-          - choose:
-              - conditions: "{{ enable_energy_tracking_var and start_kwh_helper_var != '' }}"
-                sequence:
-                  - action: input_number.set_value
-                    target:
-                      entity_id: "{{ start_kwh_helper_var }}"
-                    data:
-                      value: "{{ states(energy_sensor_var) | float(0) }}"
+        - action: input_datetime.set_datetime
+          target:
+            entity_id: '{{ snooze_datetime_helper_var }}'
+          data:
+            timestamp: '{{ (now() + timedelta(minutes=requested_snooze)).timestamp()
+              }}'
+        - repeat:
+            for_each: !input notify_device
+            sequence:
+            - variables:
+                notify_service: "{% set tracker = device_entities(repeat.item) | select('search',
+                  '^device_tracker\\.') | first | default('') %} {% if tracker %}\n
+                  \ notify.mobile_app_{{ tracker.split('.')[1] }}\n{% else %}\n  notify.mobile_app_{{
+                  device_attr(repeat.item, 'name') | slugify | replace('-', '_') }}\n{%
+                  endif %}"
+            - action: '{{ notify_service }}'
+              data:
+                message: clear_notification
+                data:
+                  tag: '{{ states(printer_task_name_var) }}'
+      - conditions: '{{ snooze_datetime_helper_var == '''' }}'
+        sequence:
+        - action: automation.turn_off
+          data:
+            stop_actions: false
+          target:
+            entity_id: '{{ this.entity_id }}'
+        - repeat:
+            for_each: !input notify_device
+            sequence:
+            - variables:
+                notify_service: "{% set tracker = device_entities(repeat.item) | select('search',
+                  '^device_tracker\\.') | first | default('') %} {% if tracker %}\n
+                  \ notify.mobile_app_{{ tracker.split('.')[1] }}\n{% else %}\n  notify.mobile_app_{{
+                  device_attr(repeat.item, 'name') | slugify | replace('-', '_') }}\n{%
+                  endif %}"
+            - action: '{{ notify_service }}'
+              data:
+                message: clear_notification
+                data:
+                  tag: '{{ states(printer_task_name_var) }}'
+        - delay:
+            minutes: '{{ safe_snooze }}'
+        - action: automation.turn_on
+          data: {}
+          target:
+            entity_id: '{{ this.entity_id }}'
 
-      # --- PRINT PROGRESS ---
-      - conditions:
-          - condition: trigger
-            id: Progress
-          - condition: template
-            value_template: >
-              {% set old = trigger.from_state.state | default(-1) | float(-1) %}
-              {% set new = trigger.to_state.state | default(-1) | float(-1) %}
-              {% set interval = progress_interval_var | float(5) %}
-              
-              {% set quiet_enabled = enable_quiet_time_var %}
-              {% set is_quiet = false %}
-              {% if quiet_enabled %}
-                {% set q_start = today_at(quiet_time_start_var) %}
-                {% set q_end = today_at(quiet_time_end_var) %}
-                {% if q_start < q_end %}
-                  {% set is_quiet = q_start <= now() <= q_end %}
-                {% else %}
-                  {% set is_quiet = now() >= q_start or now() <= q_end %}
-                {% endif %}
+  # -----------------------------------------------------------------------
+  # App-Aktion: Benutzerdefinierte Aktion
+  # -----------------------------------------------------------------------
+  - conditions:
+    - condition: trigger
+      id: App_Action
+    - condition: template
+      value_template: '{{ trigger.event.data.action == ''BAMBU_CUSTOM_'' ~ printer_status_var
+        }}'
+    sequence: !input button_3_custom_action
+
+  # -----------------------------------------------------------------------
+  # NEU – App-Aktion: Wartung Düse 1 erledigt → Zähler zurücksetzen
+  # -----------------------------------------------------------------------
+  - conditions:
+    - condition: trigger
+      id: App_Action
+    - condition: template
+      value_template: '{{ trigger.event.data.action == ''BAMBU_NOZZLE_1_DONE_'' ~ printer_status_var }}'
+    sequence:
+    - choose:
+      - conditions: '{{ nozzle_1_hours_helper_var != '''' }}'
+        sequence:
+        - action: input_number.set_value
+          target:
+            entity_id: '{{ nozzle_1_hours_helper_var }}'
+          data:
+            value: '0'
+    - choose:
+      - conditions: '{{ nozzle_1_snooze_helper_var != '''' }}'
+        sequence:
+        - action: input_datetime.set_datetime
+          target:
+            entity_id: '{{ nozzle_1_snooze_helper_var }}'
+          data:
+            timestamp: '{{ now().timestamp() }}'
+    - repeat:
+        for_each: !input notify_device
+        sequence:
+        - variables:
+            notify_service: "{% set tracker = device_entities(repeat.item) | select('search',
+              '^device_tracker\\.') | first | default('') %} {% if tracker %}\n  notify.mobile_app_{{
+              tracker.split('.')[1] }}\n{% else %}\n  notify.mobile_app_{{ device_attr(repeat.item,
+              'name') | slugify | replace('-', '_') }}\n{% endif %}"
+        - action: '{{ notify_service }}'
+          data:
+            message: clear_notification
+            data:
+              tag: bambu_nozzle_1_maintenance_{{ printer_status_var }}
+
+  # -----------------------------------------------------------------------
+  # NEU – App-Aktion: Wartung Düse 1 zurückstellen (Snooze in Stunden)
+  # -----------------------------------------------------------------------
+  - conditions:
+    - condition: trigger
+      id: App_Action
+    - condition: template
+      value_template: '{{ trigger.event.data.action == ''BAMBU_NOZZLE_1_SNOOZE_'' ~ printer_status_var }}'
+    sequence:
+    - variables:
+        nozzle_snooze_hours: "{% if trigger.event.data.reply_text is defined and trigger.event.data.reply_text\
+          \ | regex_match('^\\\\d+$') %}\n  {{ trigger.event.data.reply_text | int(24)\
+          \ }}\n{% else %}\n  24\n{% endif %}"
+    - choose:
+      - conditions: '{{ nozzle_1_snooze_helper_var != '''' }}'
+        sequence:
+        - action: input_datetime.set_datetime
+          target:
+            entity_id: '{{ nozzle_1_snooze_helper_var }}'
+          data:
+            timestamp: '{{ (now() + timedelta(hours=nozzle_snooze_hours)).timestamp() }}'
+    - repeat:
+        for_each: !input notify_device
+        sequence:
+        - variables:
+            notify_service: "{% set tracker = device_entities(repeat.item) | select('search',
+              '^device_tracker\\.') | first | default('') %} {% if tracker %}\n  notify.mobile_app_{{
+              tracker.split('.')[1] }}\n{% else %}\n  notify.mobile_app_{{ device_attr(repeat.item,
+              'name') | slugify | replace('-', '_') }}\n{% endif %}"
+        - action: '{{ notify_service }}'
+          data:
+            message: clear_notification
+            data:
+              tag: bambu_nozzle_1_maintenance_{{ printer_status_var }}
+
+  # -----------------------------------------------------------------------
+  # NEU – App-Aktion: Wartung Düse 2 erledigt → Zähler zurücksetzen
+  # -----------------------------------------------------------------------
+  - conditions:
+    - condition: trigger
+      id: App_Action
+    - condition: template
+      value_template: '{{ trigger.event.data.action == ''BAMBU_NOZZLE_2_DONE_'' ~ printer_status_var }}'
+    sequence:
+    - choose:
+      - conditions: '{{ nozzle_2_hours_helper_var != '''' }}'
+        sequence:
+        - action: input_number.set_value
+          target:
+            entity_id: '{{ nozzle_2_hours_helper_var }}'
+          data:
+            value: '0'
+    - choose:
+      - conditions: '{{ nozzle_2_snooze_helper_var != '''' }}'
+        sequence:
+        - action: input_datetime.set_datetime
+          target:
+            entity_id: '{{ nozzle_2_snooze_helper_var }}'
+          data:
+            timestamp: '{{ now().timestamp() }}'
+    - repeat:
+        for_each: !input notify_device
+        sequence:
+        - variables:
+            notify_service: "{% set tracker = device_entities(repeat.item) | select('search',
+              '^device_tracker\\.') | first | default('') %} {% if tracker %}\n  notify.mobile_app_{{
+              tracker.split('.')[1] }}\n{% else %}\n  notify.mobile_app_{{ device_attr(repeat.item,
+              'name') | slugify | replace('-', '_') }}\n{% endif %}"
+        - action: '{{ notify_service }}'
+          data:
+            message: clear_notification
+            data:
+              tag: bambu_nozzle_2_maintenance_{{ printer_status_var }}
+
+  # -----------------------------------------------------------------------
+  # NEU – App-Aktion: Wartung Düse 2 zurückstellen (Snooze in Stunden)
+  # -----------------------------------------------------------------------
+  - conditions:
+    - condition: trigger
+      id: App_Action
+    - condition: template
+      value_template: '{{ trigger.event.data.action == ''BAMBU_NOZZLE_2_SNOOZE_'' ~ printer_status_var }}'
+    sequence:
+    - variables:
+        nozzle_snooze_hours: "{% if trigger.event.data.reply_text is defined and trigger.event.data.reply_text\
+          \ | regex_match('^\\\\d+$') %}\n  {{ trigger.event.data.reply_text | int(24)\
+          \ }}\n{% else %}\n  24\n{% endif %}"
+    - choose:
+      - conditions: '{{ nozzle_2_snooze_helper_var != '''' }}'
+        sequence:
+        - action: input_datetime.set_datetime
+          target:
+            entity_id: '{{ nozzle_2_snooze_helper_var }}'
+          data:
+            timestamp: '{{ (now() + timedelta(hours=nozzle_snooze_hours)).timestamp() }}'
+    - repeat:
+        for_each: !input notify_device
+        sequence:
+        - variables:
+            notify_service: "{% set tracker = device_entities(repeat.item) | select('search',
+              '^device_tracker\\.') | first | default('') %} {% if tracker %}\n  notify.mobile_app_{{
+              tracker.split('.')[1] }}\n{% else %}\n  notify.mobile_app_{{ device_attr(repeat.item,
+              'name') | slugify | replace('-', '_') }}\n{% endif %}"
+        - action: '{{ notify_service }}'
+          data:
+            message: clear_notification
+            data:
+              tag: bambu_nozzle_2_maintenance_{{ printer_status_var }}
+
+  # -----------------------------------------------------------------------
+  # Druck gestartet
+  # -----------------------------------------------------------------------
+  - conditions:
+    - condition: trigger
+      id: Print Started
+    sequence:
+    - choose:
+      - conditions: '{{ enable_energy_tracking_var and start_kwh_helper_var != ''''
+          }}'
+        sequence:
+        - action: input_number.set_value
+          target:
+            entity_id: '{{ start_kwh_helper_var }}'
+          data:
+            value: '{{ states(energy_sensor_var) | string | replace('','', ''.'') | float(0) }}'
+
+  # -----------------------------------------------------------------------
+  # Fortschritts-Update
+  # -----------------------------------------------------------------------
+  - conditions:
+    - condition: trigger
+      id: Progress
+    - condition: template
+      value_template: "{% set old = trigger.from_state.state | default(-1) | float(-1)
+        %} {% set new = trigger.to_state.state | default(-1) | float(-1) %} {% set
+        interval = progress_interval_var | float(5) %}\n{% set quiet_enabled = enable_quiet_time_var
+        %} {% set is_quiet = false %} {% if quiet_enabled %}\n  {% set q_start = today_at(quiet_time_start_var)
+        %}\n  {% set q_end = today_at(quiet_time_end_var) %}\n  {% if q_start < q_end
+        %}\n    {% set is_quiet = q_start <= now() <= q_end %}\n  {% else %}\n    {%
+        set is_quiet = now() >= q_start or now() <= q_end %}\n  {% endif %}\n{% endif
+        %}\n{% set is_snoozed = false %} {% set snooze_helper = snooze_datetime_helper_var
+        %} {% if snooze_helper != '' and states(snooze_helper) not in ['unknown',
+        'unavailable'] %}\n  {% if state_attr(snooze_helper, 'timestamp') != None
+        %}\n    {% set is_snoozed = now().timestamp() < state_attr(snooze_helper,
+        'timestamp') %}\n  {% endif %}\n{% endif %}\n{{ old >= 0 and new > old and
+        new < 100 and (new // interval) > (old // interval) and not is_quiet and not
+        is_snoozed }}\n"
+    sequence:
+    - repeat:
+        for_each: !input notify_device
+        sequence:
+        - variables:
+            notify_service: "{% set tracker = device_entities(repeat.item) | select('search',
+              '^device_tracker\\.') | first | default('') %} {% if tracker %}\n  notify.mobile_app_{{
+              tracker.split('.')[1] }}\n{% else %}\n  notify.mobile_app_{{ device_attr(repeat.item,
+              'name') | slugify | replace('-', '_') }}\n{% endif %}"
+        - action: '{{ notify_service }}'
+          data:
+            title: 3D-Druck Update | {{ states(printer_task_name_var) }}
+            message: 'Druckfortschritt | {{ states(printer_progress_var) | int(0) }}
+              % {% if printer_remaining_time_var %} {% set remain_state = states(printer_remaining_time_var)
+              %} {% if remain_state not in [''unknown'', ''unavailable'', ''''] %}
+              {% set remain_mins = remain_state | int(0) %} {% set h = remain_mins
+              // 60 %} {% set m = remain_mins % 60 %} ⏳ Verbleibend: {% if h > 0 %}{{
+              h }}h {% endif %}{{ m }}m {% endif %} {% endif %}
+
+              '
+            data:
+              progress: '{{ states(printer_progress_var) | int(0) }}'
+              progress_max: 100
+              live_update: true
+              critical_text: '{{ states(printer_progress_var) | int(0) }} %'
+              alert_once: true
+              chronometer: true
+              sticky: true
+              persistent: true
+              tag: '{{ states(printer_task_name_var) }}'
+              notification_icon: mdi:progress-alert
+              icon_url: "{% if printer_camera_var %}\n  /api/camera_proxy/{{ printer_camera_var
+                }}\n{% else %}\n  {{ state_attr(printer_cover_image_var, 'entity_picture')
+                }}\n{% endif %}"
+              actions: "{{\n  [\n    {\"action\": \"URI\", \"title\": action_1_title_var,
+                \"uri\": action_1_uri_var},\n    {\"action\": \"URI\", \"title\":
+                action_2_camera_title_var if printer_camera_var else action_2_fallback_title_var,
+                \"uri\": (\"entityId:\" ~ printer_camera_var) if printer_camera_var
+                else action_2_fallback_uri_var}\n  ]\n  + ([{\n       \"action\":
+                \"BAMBU_MUTE_\" ~ printer_status_var, \n       \"title\": \"\U0001F507
+                Schlummern\", \n       \"behavior\": \"textInput\",\n       \"textInputButtonTitle\":
+                \"Stummschalten\",\n       \"textInputPlaceholder\": \"Min...\"\n     }] if
+                button_3_mode_var == 'Mute Progress' else [])\n  + ([{\"action\":
+                \"BAMBU_CUSTOM_\" ~ printer_status_var, \"title\": button_3_custom_title_var}]
+                if button_3_mode_var == 'Custom Action' else [])\n}}"
+
+  # -----------------------------------------------------------------------
+  # Druck abgeschlossen / fehlgeschlagen
+  # -----------------------------------------------------------------------
+  - conditions:
+    - condition: trigger
+      id:
+      - Print Complete
+      - Print failed
+    sequence:
+    # --- Snooze-Helfer zurücksetzen ---
+    - choose:
+      - conditions: '{{ snooze_datetime_helper_var != '''' }}'
+        sequence:
+        - action: input_datetime.set_datetime
+          target:
+            entity_id: '{{ snooze_datetime_helper_var }}'
+          data:
+            timestamp: '{{ now().timestamp() }}'
+    # --- Fortschritts-Benachrichtigung löschen ---
+    - repeat:
+        for_each: !input notify_device
+        sequence:
+        - variables:
+            notify_service: "{% set tracker = device_entities(repeat.item) | select('search',
+              '^device_tracker\\.') | first | default('') %} {% if tracker %}\n  notify.mobile_app_{{
+              tracker.split('.')[1] }}\n{% else %}\n  notify.mobile_app_{{ device_attr(repeat.item,
+              'name') | slugify | replace('-', '_') }}\n{% endif %}"
+        - action: '{{ notify_service }}'
+          data:
+            message: clear_notification
+            data:
+              tag: '{{ states(printer_task_name_var) }}'
+    # --- Abschluss-/Fehler-Benachrichtigung senden ---
+    - repeat:
+        for_each: !input notify_device
+        sequence:
+        - variables:
+            notify_service: "{% set tracker = device_entities(repeat.item) | select('search',
+              '^device_tracker\\.') | first | default('') %} {% if tracker %}\n  notify.mobile_app_{{
+              tracker.split('.')[1] }}\n{% else %}\n  notify.mobile_app_{{ device_attr(repeat.item,
+              'name') | slugify | replace('-', '_') }}\n{% endif %}"
+        - action: '{{ notify_service }}'
+          data:
+            title: 3D-Druck {{ 'Abgeschlossen' if trigger.id == 'Print Complete' else 'Fehlgeschlagen'
+              }} - {{ states(printer_task_name_var) }}
+            message: "{% set total_weight = states(printer_weight_var) | string | replace(',',
+              '.') | float(0) %} {% set progress = states(printer_progress_var) | string
+              | replace(',', '.') | float(100) if trigger.id == 'Print failed' else
+              100.0 %} {% set weight = total_weight * (progress / 100) %} {% set fil_cost_per_kg
+              = filament_cost_per_kg_var | string | replace(',', '.') | float(0) %}
+              {% set fil_cost = (weight / 1000) * fil_cost_per_kg %}\n{% set energy_cost
+              = 0 %} {% set usage = 0 %} {% if enable_energy_tracking_var and start_kwh_helper_var
+              != '' %}\n  {% set usage = (states(energy_sensor_var) | string | replace(',',
+              '.') | float(0) - states(start_kwh_helper_var) | string | replace(',',
+              '.') | float(0)) %}\n  {% set dynamic_price = states(electricity_price_sensor_var)
+              %}\n  {% set elec_price = dynamic_price | string | replace(',', '.') | float(static_electricity_price_var
+              | string | replace(',', '.') | float(0)) if dynamic_price not in ['unknown',
+              'unavailable', ''] else static_electricity_price_var | string | replace(',',
+              '.') | float(0) %}\n  {% set energy_cost = usage * elec_price %}\n{%
+              endif %}\n{% if trigger.id == 'Print failed' %} ⚠️ Fehlgeschlagen bei
+              {{ progress | round(0) }}% {% endif %} ⏱️ Dauer: {{ ((states(printer_end_time_var)
+              | as_timestamp(0) - states(printer_start_time_var) | as_timestamp(0))
+              / 60) | int(0) }} min\n\U0001F4CA Verbrauch Filament: {{ weight | round(1)
+              }} g {% if enable_energy_tracking_var and start_kwh_helper_var != ''
+              %}Energie: {{ usage | round(2) }} kWh{% endif %}\n{% if fil_cost > 0
+              or (enable_energy_tracking_var and start_kwh_helper_var != '') %} \U0001F4B0
+              Kostenaufschlüsselung {% if fil_cost > 0 %}Filament: €{{ \"%.2f\" | format(fil_cost)
+              }}{% endif %} {% if enable_energy_tracking_var and start_kwh_helper_var
+              != '' %}Energie: €{{ \"%.2f\" | format(energy_cost) }}{% endif %} Gesamtkosten:
+              €{{ \"%.2f\" | format(fil_cost + energy_cost) }} {% endif %}\n"
+            data:
+              color: '{{ ''green'' if trigger.id == ''Print Complete'' else ''red''
+                }}'
+              icon_url: "{% if printer_camera_var %}\n  /api/camera_proxy/{{ printer_camera_var
+                }}\n{% else %}\n  {{ state_attr(printer_cover_image_var, 'entity_picture')
+                }}\n{% endif %}"
+              actions: "{{\n  [\n    {\"action\": \"URI\", \"title\": action_1_title_var,
+                \"uri\": action_1_uri_var},\n    {\"action\": \"URI\", \"title\":
+                action_2_camera_title_var if printer_camera_var else action_2_fallback_title_var,
+                \"uri\": (\"entityId:\" ~ printer_camera_var) if printer_camera_var
+                else action_2_fallback_uri_var}\n  ]\n  + ([{\"action\": \"BAMBU_CUSTOM_\"
+                ~ printer_status_var, \"title\": button_3_custom_title_var}] if button_3_mode_var
+                == 'Custom Action' else [])\n}}"
+
+    # =====================================================================
+    # NEU: Düsen-Betriebsstunden aktualisieren
+    # =====================================================================
+    - variables:
+        print_duration_hours: >-
+          {{ ((states(printer_end_time_var) | as_timestamp(0) - states(printer_start_time_var)
+          | as_timestamp(0)) / 3600) | round(4) }}
+        tool_module_active: >-
+          {% if printer_tool_module_sensor_var != ''
+             and states(printer_tool_module_sensor_var) not in ['unknown', 'unavailable', '', 'none', 'None'] %}
+            true
+          {% else %}
+            false
+          {% endif %}
+    # Linke Düse – Stunden addieren (nur wenn kein Werkzeugmodul aktiv war)
+    - choose:
+      - conditions: >-
+          {{ enable_nozzle_tracking_var
+             and nozzle_1_hours_helper_var != ''
+             and not tool_module_active }}
+        sequence:
+        - action: input_number.set_value
+          target:
+            entity_id: '{{ nozzle_1_hours_helper_var }}'
+          data:
+            value: >-
+              {{ (states(nozzle_1_hours_helper_var) | string | replace(',', '.') | float(0)
+                 + print_duration_hours) | round(4) }}
+    # Rechte Düse – Stunden addieren (nur wenn kein Werkzeugmodul aktiv war)
+    - choose:
+      - conditions: >-
+          {{ enable_nozzle_tracking_var
+             and nozzle_2_hours_helper_var != ''
+             and not tool_module_active }}
+        sequence:
+        - action: input_number.set_value
+          target:
+            entity_id: '{{ nozzle_2_hours_helper_var }}'
+          data:
+            value: >-
+              {{ (states(nozzle_2_hours_helper_var) | string | replace(',', '.') | float(0)
+                 + print_duration_hours) | round(4) }}
+
+    # =====================================================================
+    # NEU: Wartungserinnerung Düse 1 prüfen und senden
+    # =====================================================================
+    - variables:
+        nozzle_1_current_h: >-
+          {{ states(nozzle_1_hours_helper_var) | string | replace(',', '.') | float(0)
+          if nozzle_1_hours_helper_var != '' else 0 }}
+        nozzle_1_snoozed: >-
+          {% if nozzle_1_snooze_helper_var != '' and states(nozzle_1_snooze_helper_var)
+          not in ['unknown', 'unavailable'] %}
+            {% if state_attr(nozzle_1_snooze_helper_var, 'timestamp') != None %}
+              {{ now().timestamp() < state_attr(nozzle_1_snooze_helper_var, 'timestamp') }}
+            {% else %}
+              false
+            {% endif %}
+          {% else %}
+            false
+          {% endif %}
+        nozzle_1_needs_maintenance: >-
+          {{ enable_nozzle_tracking_var
+          and nozzle_1_hours_helper_var != ''
+          and nozzle_1_current_h >= (nozzle_1_maintenance_interval_var | float(200))
+          and not nozzle_1_snoozed }}
+    - choose:
+      - conditions: '{{ nozzle_1_needs_maintenance }}'
+        sequence:
+        - repeat:
+            for_each: !input notify_device
+            sequence:
+            - variables:
+                notify_service: "{% set tracker = device_entities(repeat.item) | select('search',
+                  '^device_tracker\\.') | first | default('') %} {% if tracker %}\n
+                  \ notify.mobile_app_{{ tracker.split('.')[1] }}\n{% else %}\n  notify.mobile_app_{{
+                  device_attr(repeat.item, 'name') | slugify | replace('-', '_') }}\n{%
+                  endif %}"
+            - action: '{{ notify_service }}'
+              data:
+                title: "\U0001F527 Düsen-Wartung fällig – Düse 1"
+                message: >-
+                  Düse 1 hat {{ nozzle_1_current_h | round(1) }}h erreicht
+                  (Intervall: {{ nozzle_1_maintenance_interval_var }}h).
+                  Bitte Düse reinigen oder tauschen.
+                data:
+                  tag: bambu_nozzle_1_maintenance_{{ printer_status_var }}
+                  sticky: true
+                  persistent: true
+                  notification_icon: mdi:wrench-alert
+                  color: orange
+                  actions:
+                  - action: BAMBU_NOZZLE_1_DONE_{{ printer_status_var }}
+                    title: "\u2705 Wartung erledigt"
+                  - action: BAMBU_NOZZLE_1_SNOOZE_{{ printer_status_var }}
+                    title: "\u23F0 Erinnern in..."
+                    behavior: textInput
+                    textInputButtonTitle: Stunden
+                    textInputPlaceholder: "z.B. 24"
+
+    # =====================================================================
+    # NEU: Wartungserinnerung Düse 2 prüfen und senden
+    # =====================================================================
+    - variables:
+        nozzle_2_current_h: >-
+          {{ states(nozzle_2_hours_helper_var) | string | replace(',', '.') | float(0)
+          if nozzle_2_hours_helper_var != '' else 0 }}
+        nozzle_2_snoozed: >-
+          {% if nozzle_2_snooze_helper_var != '' and states(nozzle_2_snooze_helper_var)
+          not in ['unknown', 'unavailable'] %}
+            {% if state_attr(nozzle_2_snooze_helper_var, 'timestamp') != None %}
+              {{ now().timestamp() < state_attr(nozzle_2_snooze_helper_var, 'timestamp') }}
+            {% else %}
+              false
+            {% endif %}
+          {% else %}
+            false
+          {% endif %}
+        nozzle_2_needs_maintenance: >-
+          {{ enable_nozzle_tracking_var
+          and nozzle_2_hours_helper_var != ''
+          and nozzle_2_current_h >= (nozzle_2_maintenance_interval_var | float(200))
+          and not nozzle_2_snoozed }}
+    - choose:
+      - conditions: '{{ nozzle_2_needs_maintenance }}'
+        sequence:
+        - repeat:
+            for_each: !input notify_device
+            sequence:
+            - variables:
+                notify_service: "{% set tracker = device_entities(repeat.item) | select('search',
+                  '^device_tracker\\.') | first | default('') %} {% if tracker %}\n
+                  \ notify.mobile_app_{{ tracker.split('.')[1] }}\n{% else %}\n  notify.mobile_app_{{
+                  device_attr(repeat.item, 'name') | slugify | replace('-', '_') }}\n{%
+                  endif %}"
+            - action: '{{ notify_service }}'
+              data:
+                title: "\U0001F527 Düsen-Wartung fällig – Düse 2"
+                message: >-
+                  Düse 2 hat {{ nozzle_2_current_h | round(1) }}h erreicht
+                  (Intervall: {{ nozzle_2_maintenance_interval_var }}h).
+                  Bitte Düse reinigen oder tauschen.
+                data:
+                  tag: bambu_nozzle_2_maintenance_{{ printer_status_var }}
+                  sticky: true
+                  persistent: true
+                  notification_icon: mdi:wrench-alert
+                  color: orange
+                  actions:
+                  - action: BAMBU_NOZZLE_2_DONE_{{ printer_status_var }}
+                    title: "\u2705 Wartung erledigt"
+                  - action: BAMBU_NOZZLE_2_SNOOZE_{{ printer_status_var }}
+                    title: "\u23F0 Erinnern in..."
+                    behavior: textInput
+                    textInputButtonTitle: Stunden
+                    textInputPlaceholder: "z.B. 24"
+
+    # =====================================================================
+    # NEU: Druck-Protokollierung (Logbuch + opt. HA-Benachrichtigung)
+    # =====================================================================
+    - choose:
+      - conditions: '{{ enable_logging_var and log_helper_entity_var != '''' }}'
+        sequence:
+        - variables:
+            log_progress: >-
+              {{ states(printer_progress_var) | string | replace(',', '.') | float(100)
+              if trigger.id == 'Print failed' else 100.0 }}
+            log_total_weight: >-
+              {{ states(printer_weight_var) | string | replace(',', '.') | float(0) }}
+            log_weight: >-
+              {{ log_total_weight * (log_progress / 100) }}
+            log_fil_cost_per_kg: >-
+              {{ filament_cost_per_kg_var | string | replace(',', '.') | float(0) }}
+            log_fil_cost: >-
+              {{ (log_weight / 1000) * log_fil_cost_per_kg }}
+            log_usage_kwh: >-
+              {% if enable_energy_tracking_var and start_kwh_helper_var != '' %}
+                {{ (states(energy_sensor_var) | string | replace(',', '.') | float(0) -
+                   states(start_kwh_helper_var) | string | replace(',', '.') | float(0)) }}
+              {% else %}
+                0
               {% endif %}
-
-              {% set is_snoozed = false %}
-              {% set snooze_helper = snooze_datetime_helper_var %}
-              {% if snooze_helper != '' and states(snooze_helper) not in ['unknown', 'unavailable'] %}
-                {% if state_attr(snooze_helper, 'timestamp') != None %}
-                  {% set is_snoozed = now().timestamp() < state_attr(snooze_helper, 'timestamp') %}
-                {% endif %}
+            log_elec_price: >-
+              {% if enable_energy_tracking_var and start_kwh_helper_var != '' %}
+                {% set dp = states(electricity_price_sensor_var) %}
+                {{ dp | string | replace(',', '.') | float(static_electricity_price_var | string | replace(',', '.') | float(0))
+                   if dp not in ['unknown', 'unavailable', ''] else
+                   static_electricity_price_var | string | replace(',', '.') | float(0) }}
+              {% else %}
+                0
               {% endif %}
-
-              {{ old >= 0 and new > old and new < 100 and (new // interval) > (old // interval) and not is_quiet and not is_snoozed }}
-        sequence:
-          - repeat:
-              for_each: !input notify_device
-              sequence:
-                - variables:
-                    notify_service: >-
-                      {% set tracker = device_entities(repeat.item) | select('search', '^device_tracker\.') | first | default('') %}
-                      {% if tracker %}
-                        notify.mobile_app_{{ tracker.split('.')[1] }}
-                      {% else %}
-                        notify.mobile_app_{{ device_attr(repeat.item, 'name') | slugify | replace('-', '_') }}
-                      {% endif %}
-                - action: "{{ notify_service }}"
-                  data:
-                    title: "3D Print Update | {{ states(printer_task_name_var) }}"
-                    message: >
-                      Print Progress | {{ states(printer_progress_var) | int(0) }} %
-                      {% if printer_remaining_time_var %}
-                      {% set remain_state = states(printer_remaining_time_var) %}
-                      {% if remain_state not in ['unknown', 'unavailable', ''] %}
-                      {% set remain_mins = remain_state | int(0) %}
-                      {% set h = remain_mins // 60 %}
-                      {% set m = remain_mins % 60 %}
-                      ⏳ Remaining: {% if h > 0 %}{{ h }}h {% endif %}{{ m }}m
-                      {% endif %}
-                      {% endif %}
-                    data:
-                      progress: "{{ states(printer_progress_var) | int(0) }}"
-                      progress_max: 100
-                      live_update: true
-                      critical_text: "{{ states(printer_progress_var) | int(0) }} %"
-                      alert_once: true
-                      chronometer: true
-                      sticky: true
-                      persistent: true
-                      tag: "{{ states(printer_task_name_var) }}"
-                      notification_icon: mdi:progress-alert
-                      icon_url: >-
-                        {% if printer_camera_var %}
-                          /api/camera_proxy/{{ printer_camera_var }}
-                        {% else %}
-                          {{ state_attr(printer_cover_image_var, 'entity_picture') }}
-                        {% endif %}
-                      actions: >-
-                        {{
-                          [
-                            {"action": "URI", "title": action_1_title_var, "uri": action_1_uri_var},
-                            {"action": "URI", "title": action_2_camera_title_var if printer_camera_var else action_2_fallback_title_var, "uri": ("entityId:" ~ printer_camera_var) if printer_camera_var else action_2_fallback_uri_var}
-                          ]
-                          + ([{
-                               "action": "BAMBU_MUTE_" ~ printer_status_var, 
-                               "title": "🔇 Snooze", 
-                               "behavior": "textInput",
-                               "textInputButtonTitle": "Mute",
-                               "textInputPlaceholder": "Mins..."
-                             }] if button_3_mode_var == 'Mute Progress' else [])
-                          + ([{"action": "BAMBU_CUSTOM_" ~ printer_status_var, "title": button_3_custom_title_var}] if button_3_mode_var == 'Custom Action' else [])
-                        }}
-
-      # --- PRINT COMPLETE OR FAILED ---
-      - conditions:
-          - condition: trigger
-            id:
-              - Print Complete
-              - Print failed
-        sequence:
-          # --- 0. Clean up the Snooze Helper if used
-          - choose:
-              - conditions: "{{ snooze_datetime_helper_var != '' }}"
-                sequence:
-                  - action: input_datetime.set_datetime
-                    target:
-                      entity_id: "{{ snooze_datetime_helper_var }}"
-                    data:
-                      timestamp: "{{ now().timestamp() }}"
-                      
-          # --- 1. Clear the Progress Notification on all devices ---
-          - repeat:
-              for_each: !input notify_device
-              sequence:
-                - variables:
-                    notify_service: >-
-                      {% set tracker = device_entities(repeat.item) | select('search', '^device_tracker\.') | first | default('') %}
-                      {% if tracker %}
-                        notify.mobile_app_{{ tracker.split('.')[1] }}
-                      {% else %}
-                        notify.mobile_app_{{ device_attr(repeat.item, 'name') | slugify | replace('-', '_') }}
-                      {% endif %}
-                - action: "{{ notify_service }}"
-                  data:
-                    message: "clear_notification"
-                    data:
-                      tag: "{{ states(printer_task_name_var) }}"
-
-          # --- 2. Send the Final Summary Notification to all devices ---
-          - repeat:
-              for_each: !input notify_device
-              sequence:
-                - variables:
-                    notify_service: >-
-                      {% set tracker = device_entities(repeat.item) | select('search', '^device_tracker\.') | first | default('') %}
-                      {% if tracker %}
-                        notify.mobile_app_{{ tracker.split('.')[1] }}
-                      {% else %}
-                        notify.mobile_app_{{ device_attr(repeat.item, 'name') | slugify | replace('-', '_') }}
-                      {% endif %}
-                - action: "{{ notify_service }}"
-                  data:
-                    title: >-
-                      3D Print {{ 'Complete' if trigger.id == 'Print Complete' else 'Failed' }} - {{ states(printer_task_name_var) }}
-                    message: >
-                      {% set total_weight = states(printer_weight_var) | float(0) %}
-                      {% set progress = states(printer_progress_var) | float(100) if trigger.id == 'Print failed' else 100.0 %}
-                      {% set weight = total_weight * (progress / 100) %}
-                      {% set fil_cost_per_kg = filament_cost_per_kg_var | float(0) %}
-                      {% set fil_cost = (weight / 1000) * fil_cost_per_kg %}
-                      
-                      {% set energy_cost = 0 %}
-                      {% if enable_energy_tracking_var and start_kwh_helper_var != '' %}
-                        {% set usage = (states(energy_sensor_var) | float(0) - states(start_kwh_helper_var) | float(0)) %}
-                        {% set dynamic_price = states(electricity_price_sensor_var) %}
-                        {% set elec_price = dynamic_price | float(static_electricity_price_var) if dynamic_price not in ['unknown', 'unavailable', ''] else static_electricity_price_var | float(0) %}
-                        {% set energy_cost = usage * elec_price %}
-                      {% endif %}
-                      
-                      {% if trigger.id == 'Print failed' %}
-                      ⚠️ Failed at {{ progress | round(0) }}%
-                      {% endif %}
-                      ⏱️ Duration: {{ ((states(printer_end_time_var) | as_timestamp(0) - states(printer_start_time_var) | as_timestamp(0)) / 60) | int(0) }} min
-
-                      📊 Usage
-                      Filament: {{ weight | round(1) }} g
-                      {% if enable_energy_tracking_var and start_kwh_helper_var != '' %}Energy: {{ usage | round(2) }} kWh{% endif %}
-                      
-                      {% if fil_cost > 0 or (enable_energy_tracking_var and start_kwh_helper_var != '') %}
-                      💰 Cost Breakdown
-                      {% if fil_cost > 0 %}Filament: £{{ "%.2f" | format(fil_cost) }}{% endif %}
-                      {% if enable_energy_tracking_var and start_kwh_helper_var != '' %}Energy: £{{ "%.2f" | format(energy_cost) }}{% endif %}
-                      Total Cost: £{{ "%.2f" | format(fil_cost + energy_cost) }}
-                      {% endif %}
-                    data:
-                      color: "{{ 'green' if trigger.id == 'Print Complete' else 'red' }}"
-                      icon_url: >-
-                        {% if printer_camera_var %}
-                          /api/camera_proxy/{{ printer_camera_var }}
-                        {% else %}
-                          {{ state_attr(printer_cover_image_var, 'entity_picture') }}
-                        {% endif %}
-                      actions: >-
-                        {{
-                          [
-                            {"action": "URI", "title": action_1_title_var, "uri": action_1_uri_var},
-                            {"action": "URI", "title": action_2_camera_title_var if printer_camera_var else action_2_fallback_title_var, "uri": ("entityId:" ~ printer_camera_var) if printer_camera_var else action_2_fallback_uri_var}
-                          ]
-                          + ([{"action": "BAMBU_CUSTOM_" ~ printer_status_var, "title": button_3_custom_title_var}] if button_3_mode_var == 'Custom Action' else [])
-                        }}
+            log_energy_cost: >-
+              {{ log_usage_kwh * log_elec_price }}
+            log_duration_min: >-
+              {{ ((states(printer_end_time_var) | as_timestamp(0) - states(printer_start_time_var) | as_timestamp(0)) / 60) | int(0) }}
+            log_filaments: >-
+              {% if printer_filament_sensors_var | length > 0 %}
+                {% set ns = namespace(list=[]) %}
+                {% for s in printer_filament_sensors_var %}
+                  {% if states(s) not in ['unknown', 'unavailable', '', 'Empty', 'empty'] %}
+                    {% set ns.list = ns.list + [states(s)] %}
+                  {% endif %}
+                {% endfor %}
+                {{ ns.list | join(', ') if ns.list | length > 0 else '–' }}
+              {% else %}
+                –
+              {% endif %}
+            log_message: >-
+              {{ '✅' if trigger.id == 'Print Complete' else '❌' }} {{ states(printer_task_name_var) }}
+              | Datum: {{ now().strftime('%d.%m.%Y %H:%M') }}
+              | Dauer: {{ (log_duration_min // 60) }}h {{ (log_duration_min % 60) }}m
+              | Fortschritt: {{ log_progress | round(0) | int }}%
+              | Filament: {{ log_weight | round(1) }}g
+              {% if log_filaments != '–' %}| Materialien: {{ log_filaments }}{% endif %}
+              {% if printer_nozzle_size_sensor_var != '' and states(printer_nozzle_size_sensor_var) not in ['unknown','unavailable',''] %}| Düsengröße: {{ states(printer_nozzle_size_sensor_var) }}{% endif %}
+              {% if printer_bed_temp_sensor_var != '' and states(printer_bed_temp_sensor_var) not in ['unknown','unavailable',''] %}| Ø Betttemp.: {{ states(printer_bed_temp_sensor_var) }}°C{% endif %}
+              {% if printer_nozzle_1_temp_sensor_var != '' and states(printer_nozzle_1_temp_sensor_var) not in ['unknown','unavailable',''] %}| Ø Düse 1: {{ states(printer_nozzle_1_temp_sensor_var) }}°C{% endif %}
+              {% if printer_nozzle_2_temp_sensor_var != '' and states(printer_nozzle_2_temp_sensor_var) not in ['unknown','unavailable',''] %}| Ø Düse 2: {{ states(printer_nozzle_2_temp_sensor_var) }}°C{% endif %}
+              {% if printer_bed_type_sensor_var != '' and states(printer_bed_type_sensor_var) not in ['unknown','unavailable',''] %}| Druckbett: {{ states(printer_bed_type_sensor_var) }}{% endif %}
+              {% if printer_tool_module_sensor_var != '' and states(printer_tool_module_sensor_var) not in ['unknown','unavailable','none','None',''] %}| Werkzeugmodul: {{ states(printer_tool_module_sensor_var) }}{% endif %}
+              | Filamentkosten: €{{ "%.2f" | format(log_fil_cost) }}
+              {% if enable_energy_tracking_var and start_kwh_helper_var != '' %}| Energie: {{ log_usage_kwh | round(2) }} kWh (€{{ "%.2f" | format(log_energy_cost) }}){% endif %}
+              | Gesamt: €{{ "%.2f" | format(log_fil_cost + log_energy_cost) }}
+        # Logbuch-Eintrag
+        - action: logbook.log
+          data:
+            name: '3D Druck – {{ states(printer_task_name_var) }}'
+            message: '{{ log_message }}'
+            entity_id: '{{ log_helper_entity_var }}'  # ← Apostroph am Ende fehlt!
+        - action: input_text.set_value
+          target:
+            entity_id: '{{ log_helper_entity_var }}'
+          data:
+            value: '{{ log_message[:255] }}'
+        # Optional: Persistente HA-Benachrichtigung
+        
+        - choose:
+          - conditions: '{{ log_ha_notification_var }}'
+            sequence:
+            - action: persistent_notification.create
+              data:
+                title: "\U0001F4CB Druckprotokoll – {{ states(printer_task_name_var) }}"
+                message: "{{ log_message }}"
+                notification_id: 'bambu_log_{{ states(printer_task_name_var) | slugify }}_{{ now().timestamp() | int }}'
