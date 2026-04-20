@@ -1,6 +1,6 @@
 
 # ╔═══════════════════════════════════════════════════════════════════════╗
-# ║          Bambu Lab Print Status & Energy Tracker          v0.1.5      ║
+# ║          Bambu Lab Print Status & Energy Tracker          v0.1.6      ║
 # ║          Home Assistant Blueprint – Automation                        ║
 # ╠═══════════════════════════════════════════════════════════════════════╣
 # ║                                                                       ║
@@ -76,17 +76,11 @@ blueprint:
         printer_name:
           name: "Druckername / Printer Name"
           description: >-
-            Frei wählbarer Name oder Entität des Druckers.
-            Wird in allen Benachrichtigungen und Log-Einträgen angezeigt.
-            Text = fester Name (z.B. "Bambu X1C").
-            Entität = dynamischer Name aus einem Sensor/Input
-            (z.B. input_text.printer_name).
+            Name des Druckers. Wird in allen Benachrichtigungen und
+            Log-Einträgen angezeigt (z.B. "Bambu X1C" oder "Your printer's name").
 
-            Custom name or entity for your printer.
-            Shown in all notifications and log entries.
-            Text = fixed name (e.g. "Bambu X1C").
-            Entity = dynamic name from a sensor/input
-            (e.g. input_text.printer_name).
+            Name of the printer. Shown in all notifications and log
+            entries (e.g. "Bambu X1C" or "Your printer's name").
           default: "Bambu Lab"
           selector:
             text:
@@ -425,23 +419,6 @@ blueprint:
               max: 100.0
               step: 0.01
               mode: box
-        filament_weight_unit:
-          name: "Filamenteinheit / Filament Weight Unit"
-          description: >-
-            Einheit für die Anzeige des Filamentverbrauchs in
-            Benachrichtigungen und Logs.
-
-            Unit for displaying filament usage in notifications and logs.
-          default: kg
-          selector:
-            select:
-              options:
-                - label: Kilogramm (kg)
-                  value: kg
-                - label: Gramm (g)
-                  value: g
-              multiple: false
-              sort: false
     energy_tracking_section:
       name: "Energie-Tracking / Energy Tracking"
       icon: mdi:lightning-bolt
@@ -570,17 +547,35 @@ blueprint:
         total_fil_usage_helper:
           name: "Gesamt-Filamentverbrauch Helper / Total Filament Usage Helper (Optional)"
           description: >-
-            input_number Helper (min: 0, max: 999999, step: 0.01, unit: g).
-            Kumulierter Filamentverbrauch in Gramm über alle Drucke.
+            input_number Helper. Kumulierter Filamentverbrauch über alle
+            Drucke. Einheit abhängig von der Einstellung unten.
 
-            input_number helper (min: 0, max: 999999, step: 0.01, unit: g).
-            Cumulative filament usage in grams across all prints.
+            input_number helper. Cumulative filament usage across all
+            prints. Unit depends on the setting below.
           default: ""
           selector:
             entity:
               domain:
                 - input_number
               multiple: false
+        filament_weight_unit:
+          name: "Einheit Gesamt-Filamentverbrauch / Total Filament Usage Unit"
+          description: >-
+            Einheit in der der Gesamt-Filamentverbrauch-Helper gespeichert
+            wird. Benachrichtigungen und Logs zeigen immer Gramm.
+
+            Unit in which the total filament usage helper is stored.
+            Notifications and logs always display grams.
+          default: kg
+          selector:
+            select:
+              options:
+                - label: Kilogramm (kg)
+                  value: kg
+                - label: Gramm (g)
+                  value: g
+              multiple: false
+              sort: false
         total_fil_cost_helper:
           name: "Gesamt-Filamentkosten Helper / Total Filament Cost Helper (Optional)"
           description: >-
@@ -1134,12 +1129,7 @@ variables:
     } -%}
     {{- d.get(lang, d['en']) -}}
   # --- Bestehende Variablen ---
-  printer_name_input: !input printer_name
-  printer_name_var: >-
-    {{ states(printer_name_input) if printer_name_input.startswith('input_')
-       or printer_name_input.startswith('sensor.')
-       or printer_name_input.startswith('text.')
-       else printer_name_input }}
+  printer_name_var: !input printer_name
   printer_status_var: !input printer_status
   printer_progress_var: !input printer_progress
   printer_task_name_var: !input printer_task_name
@@ -2182,7 +2172,7 @@ action:
                       states(printer_start_time_var) | as_timestamp(0)) / 60) |
                       int(0) }} min
 
-                      📊 {{ t.filament_usage }}: {% if filament_weight_unit_var == 'kg' %}{{ (weight / 1000) }} kg{% else %}{{ weight }} g{% endif %} {% if
+                      📊 {{ t.filament_usage }}: {{ weight }} g {% if
                       enable_energy_tracking_var and start_kwh_helper_var != ''
                       %}{{ t.energy }}: {{ usage | round(2) }} kWh{% endif %}
 
@@ -2464,7 +2454,7 @@ action:
                         now().strftime(t.date_fmt) }} | {{ t.duration }}: {{
                         (log_duration_min // 60) }}h {{ (log_duration_min % 60)
                         }}m | {{ t.progress_lbl }}: {{ log_progress | round(0) | int }}%
-                        | Filament: {% if filament_weight_unit_var == 'kg' %}{{ (log_weight / 1000) }} kg{% else %}{{ log_weight }} g{% endif %} {% if
+                        | Filament: {{ log_weight }} g {% if
                         log_filaments != '–' %}| {{ t.materials }}: {{ log_filaments
                         }}{% endif %} {% if printer_nozzle_size_sensor_var != ''
                         and states(printer_nozzle_size_sensor_var) not in
@@ -2590,7 +2580,7 @@ action:
                       entity_id: "{{ total_fil_usage_helper_var }}"
                     data:
                       value: >-
-                        {{ (states(total_fil_usage_helper_var) | float(0) + print_total_weight | float(0)) | round(2) }}
+                        {{ (states(total_fil_usage_helper_var) | float(0) + (print_total_weight / 1000 if filament_weight_unit_var == 'kg' else print_total_weight) | float(0)) | round(4) }}
           # Gesamt-Filamentkosten aktualisieren
           - choose:
               - conditions: "{{ total_fil_cost_helper_var != '' }}"
