@@ -1,34 +1,71 @@
-# Bambu Lab Print Status and Energy Tracker
+# Bambu Lab Print Status & Energy Tracker
 
-A Home Assistant blueprint to monitor Bambu Lab 3D prints. This blueprint provides monitoring for print progress, completion, and failures, with integrated cost and energy tracking.
+A Home Assistant blueprint to monitor Bambu Lab 3D prints with interactive mobile notifications for progress, completion, and failures — including energy tracking, cost calculation, print logging, filament tracking, nozzle maintenance reminders, and multi-language support (Bambu H2D supported).
 
 <a href="https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fwillhaggan%2Fha-bambu-print-tracker%2Fblob%2Fmain%2Fbambu_update_main.yaml" target="_blank" rel="noreferrer noopener"><img src="https://my.home-assistant.io/badges/blueprint_import.svg" alt="Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled." /></a>
 
 ---
 
 ## Features
-- **Real-Time Progress:** Monitor completion percentage with adjustable update intervals.
-- **Cost Calculation:** Calculate filament and energy costs per print job.
-- **Energy Tracking:** Integration for smart plugs with kWh sensors and support for dynamic electricity pricing.
-- **Visual Feedback:** Support for live camera snapshots or cover images within notifications.
-- **Smart Snooze:** Interactive mute functionality allowing users to silence updates for a specific duration via text input.
-- **Quiet Hours:** Optional schedule to silence progress updates during specified time windows. Critical alerts (Completion/Failure) bypass this setting.
+
+### Notifications
+- **Real-Time Progress:** Adjustable update intervals (e.g. every 5% or 10%) with live progress bar.
+- **Visual Feedback:** Live camera snapshots or cover images in notifications.
+- **Smart Snooze:** Mute progress notifications for a custom duration via text input on your phone. Uses an `input_datetime` helper for safe snoozing (automation stays active) or falls back to temporarily disabling the automation.
+- **Quiet Hours:** Suppress progress notifications during configurable time windows. Completion and failure alerts are always sent.
+- **Custom Action Buttons:** Up to 3 configurable action buttons per notification (open apps, URIs, or run custom actions).
+- **Multi-Device Support:** Send notifications to multiple mobile devices simultaneously.
+
+### Cost Tracking
+- **Filament Costs:** Automatic calculation based on print weight and configurable cost per kg.
+- **Energy Costs:** Integration with smart plugs (kWh sensors). Supports both static pricing and dynamic price sensors (e.g. Tibber, aWATTar).
+
+### Print Logging
+- **Detailed Log Entries:** Logs each completed/failed print to the HA Logbook with duration, weight, materials, temperatures, costs, and more.
+- **Filament Tracking:** Automatically collects all filament types used during a print via the "Active Slot" sensor — deduplicated and stored in an `input_text` helper.
+- **Persistent HA Notifications:** Optionally show log entries as persistent notifications in the HA notification center.
+- **Optional Sensors:** Nozzle size, bed temperature, nozzle temperatures, bed type, and tool module status.
+
+### Nozzle Maintenance (Bambu H2D)
+- **Operating Hours Tracking:** Automatically counts print hours per nozzle (skips laser/cutter jobs).
+- **Maintenance Reminders:** Configurable interval per nozzle with mobile notification including "Done" and "Snooze" buttons.
+- **H2D Labels:** Optionally replaces "Nozzle 1/2" with "Left/Right Nozzle" labels.
+
+### Internationalization
+- **Multi-Language:** All notifications, log entries, and button labels are available in 🇩🇪 German, 🇬🇧 English, 🇫🇷 French, and 🇪🇸 Spanish. Additional languages can be easily added to the translation dictionary.
+- **Configurable Currency:** Currency symbol for cost display is freely configurable (€, $, £, CHF, etc.).
+- **Localized Date Formats:** Date format in logs adapts to the selected language.
+
+---
 
 ## Requirements
-The following components are required for full functionality:
-1. **Bambu Lab Integration:** Installed via HACS or official methods.
-2. **Mobile App Integration:** Required for actionable notifications.
-3. **Helpers (Optional):**
-   - An `input_datetime` (configured for Date and Time) is required for the Snooze feature.
-   - An `input_number` is required to store the starting kWh for energy tracking.
+
+1. **Bambu Lab Integration** — installed via HACS or official methods.
+2. **Mobile App Integration** — required for actionable notifications.
+
+### Optional Helpers
+
+| Helper | Type | Purpose |
+|---|---|---|
+| Snooze Helper | `input_datetime` (Date + Time) | Safe snooze for progress muting |
+| Start kWh Helper | `input_number` | Stores energy meter reading at print start |
+| Filament Log Helper | `input_text` (max 255) | Collects filament names used during a print |
+| Print Log Helper | `input_text` (max 255) | Stores last log entry & links logbook entries |
+| Nozzle 1/2 Hours | `input_number` (0–10000, step 0.01, unit: h) | Accumulated operating hours per nozzle |
+| Nozzle 1/2 Snooze | `input_datetime` (Date + Time) | Snooze maintenance reminders |
+
+---
 
 ## Installation
-1. Click the Import Blueprint button above or copy the URL of the YAML file.
-2. In Home Assistant, navigate to Settings > Automations & Scenes > Blueprints.
-3. Click Import Blueprint and paste the URL.
+
+1. Click the **Import Blueprint** button above or copy the URL of the YAML file.
+2. In Home Assistant, navigate to **Settings → Automations & Scenes → Blueprints**.
+3. Click **Import Blueprint** and paste the URL.
 4. Create an automation from the imported blueprint and map your printer sensors to the inputs.
+5. Create the required helpers as needed (see table above).
 
 ---
 
 ## Contributing
+
 For bug reports or feature requests, please open an issue in this repository.
