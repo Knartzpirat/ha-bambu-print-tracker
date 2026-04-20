@@ -806,41 +806,31 @@ blueprint:
         nozzle_1_type:
           name: "Düsentyp Düse 1 / Nozzle 1 Type"
           description: >-
-            Typ der Düse 1. Wird im Log protokolliert.
+            Sensor der den Typ der Düse 1 anzeigt (von ha-bambulab).
+            Wird im Log in der gewählten Sprache angezeigt.
 
-            Type of nozzle 1. Logged in the print log.
-          default: "Hardened Steel"
+            Sensor showing the type of nozzle 1 (from ha-bambulab).
+            Displayed in the log in the selected language.
+          default: ""
           selector:
-            select:
-              options:
-                - "Hardened Steel"
-                - "Stainless Steel"
-                - "Tungsten Carbide"
-                - "High Flow Hardened Steel"
-                - "High Flow Stainless Steel"
-                - "High Flow Tungsten Carbide"
-              custom_value: true
+            entity:
+              domain:
+                - sensor
               multiple: false
-              sort: false
         nozzle_2_type:
           name: "Düsentyp Düse 2 / Nozzle 2 Type"
           description: >-
-            Typ der Düse 2. Wird im Log protokolliert.
+            Sensor der den Typ der Düse 2 anzeigt (von ha-bambulab).
+            Wird im Log in der gewählten Sprache angezeigt.
 
-            Type of nozzle 2. Logged in the print log.
-          default: "Hardened Steel"
+            Sensor showing the type of nozzle 2 (from ha-bambulab).
+            Displayed in the log in the selected language.
+          default: ""
           selector:
-            select:
-              options:
-                - "Hardened Steel"
-                - "Stainless Steel"
-                - "Tungsten Carbide"
-                - "High Flow Hardened Steel"
-                - "High Flow Stainless Steel"
-                - "High Flow Tungsten Carbide"
-              custom_value: true
+            entity:
+              domain:
+                - sensor
               multiple: false
-              sort: false
         nozzle_1_target_temp_sensor:
           name: "Düse 1 Zieltemperatur / Nozzle 1 Target Temp"
           description: >-
@@ -1204,15 +1194,17 @@ variables:
   nozzle_1_type_var: !input nozzle_1_type
   nozzle_2_type_var: !input nozzle_2_type
   nozzle_1_type_display_var: >-
-    {% set m = {'Hardened Steel': t.nt_hardened_steel, 'Stainless Steel': t.nt_stainless_steel,
-    'Tungsten Carbide': t.nt_tungsten_carbide, 'High Flow Hardened Steel': t.nt_hf_hardened_steel,
-    'High Flow Stainless Steel': t.nt_hf_stainless_steel, 'High Flow Tungsten Carbide': t.nt_hf_tungsten_carbide} %}
-    {{ m.get(nozzle_1_type_var, nozzle_1_type_var) }}
+    {% set raw = states(nozzle_1_type_var) if nozzle_1_type_var != '' else '' %}
+    {% set m = {'hardened_steel': t.nt_hardened_steel, 'stainless_steel': t.nt_stainless_steel,
+    'tungsten_carbide': t.nt_tungsten_carbide, 'high_flow_hardened_steel': t.nt_hf_hardened_steel,
+    'high_flow_stainless_steel': t.nt_hf_stainless_steel, 'high_flow_tungsten_carbide': t.nt_hf_tungsten_carbide} %}
+    {{ m.get(raw, raw) }}
   nozzle_2_type_display_var: >-
-    {% set m = {'Hardened Steel': t.nt_hardened_steel, 'Stainless Steel': t.nt_stainless_steel,
-    'Tungsten Carbide': t.nt_tungsten_carbide, 'High Flow Hardened Steel': t.nt_hf_hardened_steel,
-    'High Flow Stainless Steel': t.nt_hf_stainless_steel, 'High Flow Tungsten Carbide': t.nt_hf_tungsten_carbide} %}
-    {{ m.get(nozzle_2_type_var, nozzle_2_type_var) }}
+    {% set raw = states(nozzle_2_type_var) if nozzle_2_type_var != '' else '' %}
+    {% set m = {'hardened_steel': t.nt_hardened_steel, 'stainless_steel': t.nt_stainless_steel,
+    'tungsten_carbide': t.nt_tungsten_carbide, 'high_flow_hardened_steel': t.nt_hf_hardened_steel,
+    'high_flow_stainless_steel': t.nt_hf_stainless_steel, 'high_flow_tungsten_carbide': t.nt_hf_tungsten_carbide} %}
+    {{ m.get(raw, raw) }}
   nozzle_1_label: "{{ t.left_nozzle if is_h2d_printer_var else t.nozzle_1 }}"
   nozzle_2_label: "{{ t.right_nozzle if is_h2d_printer_var else t.nozzle_2 }}"
   nozzle_1_hours_helper_var: !input nozzle_1_hours_helper
