@@ -389,7 +389,7 @@ blueprint:
           description: >-
             Text für die dritte Schaltfläche im Modus „Custom Action".
             Text for the third button in "Custom Action" mode.
-          default: Run Custom Action
+          default: Custom Action
           selector:
             text:
               multiline: false
