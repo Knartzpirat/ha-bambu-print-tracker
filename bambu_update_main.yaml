@@ -928,6 +928,48 @@ blueprint:
               domain:
                 - input_datetime
               multiple: false
+        nozzle_1_reset_button:
+          name: "Düse 1 Reset-Schalter / Nozzle 1 Reset Button (Optional)"
+          description: >-
+            input_button Helper. Durch Betätigung wird eine
+            Sicherheitsabfrage auf das Handy geschickt.
+            Bei Bestätigung wird der Betriebsstundenzähler
+            der Düse 1 auf 0 zurückgesetzt.
+            Alternativ kann der Zähler jederzeit manuell
+            über den input_number Helper auf 0 gesetzt werden.
+
+            input_button helper. When pressed, a confirmation
+            notification is sent to your phone. If confirmed,
+            the nozzle 1 operating hours counter resets to 0.
+            Alternatively, you can manually set the counter
+            to 0 via the input_number helper at any time.
+          default: ""
+          selector:
+            entity:
+              domain:
+                - input_button
+              multiple: false
+        nozzle_2_reset_button:
+          name: "Düse 2 Reset-Schalter / Nozzle 2 Reset Button (Optional)"
+          description: >-
+            input_button Helper. Durch Betätigung wird eine
+            Sicherheitsabfrage auf das Handy geschickt.
+            Bei Bestätigung wird der Betriebsstundenzähler
+            der Düse 2 auf 0 zurückgesetzt.
+            Alternativ kann der Zähler jederzeit manuell
+            über den input_number Helper auf 0 gesetzt werden.
+
+            input_button helper. When pressed, a confirmation
+            notification is sent to your phone. If confirmed,
+            the nozzle 2 operating hours counter resets to 0.
+            Alternatively, you can manually set the counter
+            to 0 via the input_number helper at any time.
+          default: ""
+          selector:
+            entity:
+              domain:
+                - input_button
+              multiple: false
 
   source_url: https://raw.githubusercontent.com/Knartzpirat/ha-bambu-print-tracker/main/bambu_update_main.yaml
 
@@ -957,7 +999,9 @@ variables:
     'print_bed': 'Druckbett', 'tool_module': 'Werkzeugmodul',
     'filament_cost': 'Filamentkosten', 'filament': 'Filament',
     'total': 'Gesamt', 'print_log': 'Druckprotokoll',
-    'log_name': '3D-Druck', 'eg': 'z.B.', 'date_fmt': '%d.%m.%Y %H:%M'
+    'log_name': '3D-Druck', 'eg': 'z.B.', 'date_fmt': '%d.%m.%Y %H:%M',
+    'reset_confirm': 'Zähler zurücksetzen?', 'reset_msg': '[N] hat aktuell [H]h Betriebsstunden. Wirklich auf 0 zurücksetzen?',
+    'reset_yes': 'Ja, zurücksetzen', 'reset_no': 'Abbrechen'
     },
     'en': {
     'print_update': '3D Print Update', 'print_progress': 'Print progress',
@@ -976,7 +1020,9 @@ variables:
     'print_bed': 'Print bed', 'tool_module': 'Tool module',
     'filament_cost': 'Filament cost', 'filament': 'Filament',
     'total': 'Total', 'print_log': 'Print log',
-    'log_name': '3D Print', 'eg': 'e.g.', 'date_fmt': '%Y-%m-%d %H:%M'
+    'log_name': '3D Print', 'eg': 'e.g.', 'date_fmt': '%Y-%m-%d %H:%M',
+    'reset_confirm': 'Reset counter?', 'reset_msg': '[N] currently has [H]h operating hours. Really reset to 0?',
+    'reset_yes': 'Yes, reset', 'reset_no': 'Cancel'
     },
     'fr': {
     'print_update': 'Impression 3D – Mise à jour', 'print_progress': 'Progression',
@@ -995,7 +1041,9 @@ variables:
     'print_bed': 'Plateau', 'tool_module': 'Module outil',
     'filament_cost': 'Coût filament', 'filament': 'Filament',
     'total': 'Total', 'print_log': 'Journal impression',
-    'log_name': 'Impression 3D', 'eg': 'ex.', 'date_fmt': '%d/%m/%Y %H:%M'
+    'log_name': 'Impression 3D', 'eg': 'ex.', 'date_fmt': '%d/%m/%Y %H:%M',
+    'reset_confirm': 'Réinitialiser compteur?', 'reset_msg': '[N] a actuellement [H]h de fonctionnement. Vraiment réinitialiser à 0?',
+    'reset_yes': 'Oui, réinitialiser', 'reset_no': 'Annuler'
     },
     'es': {
     'print_update': 'Impresión 3D – Actualización', 'print_progress': 'Progreso',
@@ -1014,7 +1062,9 @@ variables:
     'print_bed': 'Cama de impresión', 'tool_module': 'Módulo herramienta',
     'filament_cost': 'Costo filamento', 'filament': 'Filamento',
     'total': 'Total', 'print_log': 'Registro de impresión',
-    'log_name': 'Impresión 3D', 'eg': 'ej.', 'date_fmt': '%d/%m/%Y %H:%M'
+    'log_name': 'Impresión 3D', 'eg': 'ej.', 'date_fmt': '%d/%m/%Y %H:%M',
+    'reset_confirm': '¿Reiniciar contador?', 'reset_msg': '[N] tiene actualmente [H]h de funcionamiento. ¿Reiniciar a 0?',
+    'reset_yes': 'Sí, reiniciar', 'reset_no': 'Cancelar'
     }
     } -%}
     {{- d.get(lang, d['en']) -}}
@@ -1080,6 +1130,8 @@ variables:
   nozzle_2_target_temp_var: !input nozzle_2_target_temp_sensor
   nozzle_1_heating_start_var: !input nozzle_1_heating_start_helper
   nozzle_2_heating_start_var: !input nozzle_2_heating_start_helper
+  nozzle_1_reset_button_var: !input nozzle_1_reset_button
+  nozzle_2_reset_button_var: !input nozzle_2_reset_button
 
 mode: parallel
 
@@ -1149,6 +1201,14 @@ trigger:
          states(nozzle_2_target_temp_var) | float(0) <= nozzle_temp_threshold_var | float(100) and
          states(nozzle_2_heating_start_var) | float(0) > 0 }}
     id: Nozzle_2_Heat_Stop
+  # --- Düse 1: Reset-Schalter betätigt ---
+  - trigger: state
+    entity_id: !input nozzle_1_reset_button
+    id: Nozzle_1_Reset
+  # --- Düse 2: Reset-Schalter betätigt ---
+  - trigger: state
+    entity_id: !input nozzle_2_reset_button
+    id: Nozzle_2_Reset
 
 # =========================================================================
 # Aktionen
@@ -1454,6 +1514,242 @@ action:
                     message: clear_notification
                     data:
                       tag: bambu_nozzle_2_maintenance_{{ printer_status_var }}
+
+      # -----------------------------------------------------------------------
+      # Reset-Schalter Düse 1 → Sicherheitsabfrage senden
+      # -----------------------------------------------------------------------
+      - conditions:
+          - condition: trigger
+            id: Nozzle_1_Reset
+        sequence:
+          - repeat:
+              for_each: !input notify_device
+              sequence:
+                - variables:
+                    notify_service: "{% set tracker = device_entities(repeat.item) |
+                      select('search', '^device_tracker\\.') | first |
+                      default('') %} {% if tracker %}
+
+                      \  notify.mobile_app_{{ tracker.split('.')[1] }}
+
+                      {% else %}
+
+                      \  notify.mobile_app_{{ device_attr(repeat.item, 'name') |
+                      slugify | replace('-', '_') }}
+
+                      {% endif %}"
+                - action: "{{ notify_service }}"
+                  data:
+                    title: "⚠️ {{ printer_name_var }} – {{ t.reset_confirm }} – {{ nozzle_1_label }}"
+                    message: >-
+                      {{ t.reset_msg | replace('[N]', nozzle_1_label) | replace('[H]',
+                      states(nozzle_1_hours_helper_var) | float(0) | round(1) | string) }}
+                    data:
+                      tag: bambu_nozzle_1_reset_{{ printer_status_var }}
+                      sticky: true
+                      actions:
+                        - action: BAMBU_NOZZLE_1_RESET_YES_{{ printer_status_var }}
+                          title: "✅ {{ t.reset_yes }}"
+                        - action: BAMBU_NOZZLE_1_RESET_NO_{{ printer_status_var }}
+                          title: "❌ {{ t.reset_no }}"
+
+      # -----------------------------------------------------------------------
+      # Reset-Schalter Düse 2 → Sicherheitsabfrage senden
+      # -----------------------------------------------------------------------
+      - conditions:
+          - condition: trigger
+            id: Nozzle_2_Reset
+        sequence:
+          - repeat:
+              for_each: !input notify_device
+              sequence:
+                - variables:
+                    notify_service: "{% set tracker = device_entities(repeat.item) |
+                      select('search', '^device_tracker\\.') | first |
+                      default('') %} {% if tracker %}
+
+                      \  notify.mobile_app_{{ tracker.split('.')[1] }}
+
+                      {% else %}
+
+                      \  notify.mobile_app_{{ device_attr(repeat.item, 'name') |
+                      slugify | replace('-', '_') }}
+
+                      {% endif %}"
+                - action: "{{ notify_service }}"
+                  data:
+                    title: "⚠️ {{ printer_name_var }} – {{ t.reset_confirm }} – {{ nozzle_2_label }}"
+                    message: >-
+                      {{ t.reset_msg | replace('[N]', nozzle_2_label) | replace('[H]',
+                      states(nozzle_2_hours_helper_var) | float(0) | round(1) | string) }}
+                    data:
+                      tag: bambu_nozzle_2_reset_{{ printer_status_var }}
+                      sticky: true
+                      actions:
+                        - action: BAMBU_NOZZLE_2_RESET_YES_{{ printer_status_var }}
+                          title: "✅ {{ t.reset_yes }}"
+                        - action: BAMBU_NOZZLE_2_RESET_NO_{{ printer_status_var }}
+                          title: "❌ {{ t.reset_no }}"
+
+      # -----------------------------------------------------------------------
+      # App-Aktion: Düse 1 Reset bestätigt → Zähler zurücksetzen
+      # -----------------------------------------------------------------------
+      - conditions:
+          - condition: trigger
+            id: App_Action
+          - condition: template
+            value_template: "{{ trigger.event.data.action == 'BAMBU_NOZZLE_1_RESET_YES_' ~
+              printer_status_var }}"
+        sequence:
+          - choose:
+              - conditions: "{{ nozzle_1_hours_helper_var != '' }}"
+                sequence:
+                  - action: input_number.set_value
+                    target:
+                      entity_id: "{{ nozzle_1_hours_helper_var }}"
+                    data:
+                      value: "0"
+          - choose:
+              - conditions: "{{ nozzle_1_snooze_helper_var != '' }}"
+                sequence:
+                  - action: input_datetime.set_datetime
+                    target:
+                      entity_id: "{{ nozzle_1_snooze_helper_var }}"
+                    data:
+                      timestamp: "{{ now().timestamp() }}"
+          - repeat:
+              for_each: !input notify_device
+              sequence:
+                - variables:
+                    notify_service: "{% set tracker = device_entities(repeat.item) |
+                      select('search', '^device_tracker\\.') | first |
+                      default('') %} {% if tracker %}
+
+                      \  notify.mobile_app_{{ tracker.split('.')[1] }}
+
+                      {% else %}
+
+                      \  notify.mobile_app_{{ device_attr(repeat.item, 'name') |
+                      slugify | replace('-', '_') }}
+
+                      {% endif %}"
+                - action: "{{ notify_service }}"
+                  data:
+                    message: clear_notification
+                    data:
+                      tag: bambu_nozzle_1_reset_{{ printer_status_var }}
+
+      # -----------------------------------------------------------------------
+      # App-Aktion: Düse 1 Reset abgelehnt → Benachrichtigung entfernen
+      # -----------------------------------------------------------------------
+      - conditions:
+          - condition: trigger
+            id: App_Action
+          - condition: template
+            value_template: "{{ trigger.event.data.action == 'BAMBU_NOZZLE_1_RESET_NO_' ~
+              printer_status_var }}"
+        sequence:
+          - repeat:
+              for_each: !input notify_device
+              sequence:
+                - variables:
+                    notify_service: "{% set tracker = device_entities(repeat.item) |
+                      select('search', '^device_tracker\\.') | first |
+                      default('') %} {% if tracker %}
+
+                      \  notify.mobile_app_{{ tracker.split('.')[1] }}
+
+                      {% else %}
+
+                      \  notify.mobile_app_{{ device_attr(repeat.item, 'name') |
+                      slugify | replace('-', '_') }}
+
+                      {% endif %}"
+                - action: "{{ notify_service }}"
+                  data:
+                    message: clear_notification
+                    data:
+                      tag: bambu_nozzle_1_reset_{{ printer_status_var }}
+
+      # -----------------------------------------------------------------------
+      # App-Aktion: Düse 2 Reset bestätigt → Zähler zurücksetzen
+      # -----------------------------------------------------------------------
+      - conditions:
+          - condition: trigger
+            id: App_Action
+          - condition: template
+            value_template: "{{ trigger.event.data.action == 'BAMBU_NOZZLE_2_RESET_YES_' ~
+              printer_status_var }}"
+        sequence:
+          - choose:
+              - conditions: "{{ nozzle_2_hours_helper_var != '' }}"
+                sequence:
+                  - action: input_number.set_value
+                    target:
+                      entity_id: "{{ nozzle_2_hours_helper_var }}"
+                    data:
+                      value: "0"
+          - choose:
+              - conditions: "{{ nozzle_2_snooze_helper_var != '' }}"
+                sequence:
+                  - action: input_datetime.set_datetime
+                    target:
+                      entity_id: "{{ nozzle_2_snooze_helper_var }}"
+                    data:
+                      timestamp: "{{ now().timestamp() }}"
+          - repeat:
+              for_each: !input notify_device
+              sequence:
+                - variables:
+                    notify_service: "{% set tracker = device_entities(repeat.item) |
+                      select('search', '^device_tracker\\.') | first |
+                      default('') %} {% if tracker %}
+
+                      \  notify.mobile_app_{{ tracker.split('.')[1] }}
+
+                      {% else %}
+
+                      \  notify.mobile_app_{{ device_attr(repeat.item, 'name') |
+                      slugify | replace('-', '_') }}
+
+                      {% endif %}"
+                - action: "{{ notify_service }}"
+                  data:
+                    message: clear_notification
+                    data:
+                      tag: bambu_nozzle_2_reset_{{ printer_status_var }}
+
+      # -----------------------------------------------------------------------
+      # App-Aktion: Düse 2 Reset abgelehnt → Benachrichtigung entfernen
+      # -----------------------------------------------------------------------
+      - conditions:
+          - condition: trigger
+            id: App_Action
+          - condition: template
+            value_template: "{{ trigger.event.data.action == 'BAMBU_NOZZLE_2_RESET_NO_' ~
+              printer_status_var }}"
+        sequence:
+          - repeat:
+              for_each: !input notify_device
+              sequence:
+                - variables:
+                    notify_service: "{% set tracker = device_entities(repeat.item) |
+                      select('search', '^device_tracker\\.') | first |
+                      default('') %} {% if tracker %}
+
+                      \  notify.mobile_app_{{ tracker.split('.')[1] }}
+
+                      {% else %}
+
+                      \  notify.mobile_app_{{ device_attr(repeat.item, 'name') |
+                      slugify | replace('-', '_') }}
+
+                      {% endif %}"
+                - action: "{{ notify_service }}"
+                  data:
+                    message: clear_notification
+                    data:
+                      tag: bambu_nozzle_2_reset_{{ printer_status_var }}
 
       # -----------------------------------------------------------------------
       # Druck gestartet
