@@ -1,22 +1,22 @@
 
 # ╔═══════════════════════════════════════════════════════════════════════╗
-# ║          Bambu Lab Print Status & Energy Tracker          v0.1.4     ║
-# ║          Home Assistant Blueprint – Automation                       ║
+# ║          Bambu Lab Print Status & Energy Tracker          v0.1.4      ║
+# ║          Home Assistant Blueprint – Automation                        ║
 # ╠═══════════════════════════════════════════════════════════════════════╣
-# ║                                                                      ║
-# ║  Fork by Knartzpirat                                                 ║
-# ║  https://github.com/Knartzpirat/ha-bambu-print-tracker              ║
-# ║                                                                      ║
-# ║  Based on the excellent original blueprint by                        ║
-# ║  Will Haggan (@willhaggan) – thank you for the great foundation! 🙏 ║
-# ║  https://github.com/willhaggan/ha-bambu-print-tracker               ║
-# ║                                                                      ║
-# ║  Added features:                                                     ║
-# ║    • Print logging (logbook + persistent HA notifications)           ║
-# ║    • Live filament tracking via "Active Slot" sensor                 ║
-# ║    • Nozzle maintenance tracking with reminders (H2D support)        ║
-# ║    • Multi-language support (DE, EN, FR, ES) + configurable currency ║
-# ║                                                                      ║
+# ║                                                                       ║
+# ║  Fork by Knartzpirat                                                  ║
+# ║  https://github.com/Knartzpirat/ha-bambu-print-tracker                ║
+# ║                                                                       ║
+# ║  Based on the excellent original blueprint by                         ║
+# ║  Will Haggan (@willhaggan) – thank you for the great foundation! 🙏  ║
+# ║  https://github.com/willhaggan/ha-bambu-print-tracker                 ║
+# ║                                                                       ║
+# ║  Added features:                                                      ║
+# ║    • Print logging (logbook + persistent HA notifications)            ║
+# ║    • Live filament tracking via "Active Slot" sensor                  ║
+# ║    • Nozzle maintenance tracking with reminders (H2D support)         ║
+# ║    • Multi-language support (DE, EN, FR, ES) + configurable currency  ║
+# ║                                                                       ║
 # ╚═══════════════════════════════════════════════════════════════════════╝
 
 blueprint:
