@@ -362,13 +362,16 @@ blueprint:
         snooze_datetime_helper:
           name: "Snooze-Helper (Optional)"
           description: >-
-            input_datetime Helper (Datum + Uhrzeit). Ermöglicht sicheres
-            Stummschalten – die Automatisierung bleibt aktiv. Ohne Helper
-            wird die Automatisierung vorübergehend deaktiviert.
+            input_datetime Helper (Datum + Uhrzeit). Ermöglicht das
+            Stummschalten von Fortschrittsbenachrichtigungen für eine
+            einstellbare Dauer. Die Automatisierung bleibt immer aktiv –
+            alle Tracking-Funktionen laufen im Hintergrund weiter.
+            Ohne Helper wird nur die aktuelle Benachrichtigung entfernt.
 
-            input_datetime helper (date + time). Enables safe snoozing –
-            the automation stays active. Without helper, the automation is
-            temporarily disabled.
+            input_datetime helper (date + time). Allows muting progress
+            notifications for a configurable duration. The automation
+            always stays active – all tracking continues in the background.
+            Without helper, only the current notification is dismissed.
           default: ""
           selector:
             entity:
@@ -1220,11 +1223,7 @@ action:
                               tag: "{{ states(printer_task_name_var) }}"
               - conditions: "{{ snooze_datetime_helper_var == '' }}"
                 sequence:
-                  - action: automation.turn_off
-                    data:
-                      stop_actions: false
-                    target:
-                      entity_id: "{{ this.entity_id }}"
+                  # Ohne Helper: nur Benachrichtigung entfernen (kein Snooze möglich)
                   - repeat:
                       for_each: !input notify_device
                       sequence:
@@ -1246,12 +1245,6 @@ action:
                             message: clear_notification
                             data:
                               tag: "{{ states(printer_task_name_var) }}"
-                  - delay:
-                      minutes: "{{ safe_snooze }}"
-                  - action: automation.turn_on
-                    data: {}
-                    target:
-                      entity_id: "{{ this.entity_id }}"
 
       # -----------------------------------------------------------------------
       # App-Aktion: Benutzerdefinierte Aktion
