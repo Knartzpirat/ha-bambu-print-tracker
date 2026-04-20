@@ -73,6 +73,19 @@ blueprint:
       name: "Drucker-Sensoren / Printer Sensors"
       icon: mdi:printer-3d
       input:
+        printer_name:
+          name: "Druckername / Printer Name"
+          description: >-
+            Frei wählbarer Name des Druckers. Wird in allen
+            Benachrichtigungen und Log-Einträgen angezeigt.
+
+            Custom name for your printer. Shown in all
+            notifications and log entries.
+          default: "Bambu Lab"
+          selector:
+            text:
+              multiline: false
+              multiple: false
         printer_status:
           name: "Druckstatus / Print Status"
           description: >-
@@ -482,6 +495,38 @@ blueprint:
               domain:
                 - input_number
               multiple: false
+        total_energy_helper:
+          name: "Gesamtenergie Helper / Total Energy Helper (Optional)"
+          description: >-
+            input_number Helper (min: 0, max: 999999, step: 0.01, unit: kWh).
+            Kumulierter Gesamtenergieverbrauch über alle Drucke.
+            Wird nach jedem Druck automatisch erhöht.
+
+            input_number helper (min: 0, max: 999999, step: 0.01, unit: kWh).
+            Cumulative total energy consumption across all prints.
+            Automatically incremented after each print.
+          default: ""
+          selector:
+            entity:
+              domain:
+                - input_number
+              multiple: false
+        total_cost_helper:
+          name: "Gesamtkosten Helper / Total Cost Helper (Optional)"
+          description: >-
+            input_number Helper (min: 0, max: 999999, step: 0.01).
+            Kumulierte Gesamtkosten (Filament + Energie) über alle Drucke.
+            Wird nach jedem Druck automatisch erhöht.
+
+            input_number helper (min: 0, max: 999999, step: 0.01).
+            Cumulative total costs (filament + energy) across all prints.
+            Automatically incremented after each print.
+          default: ""
+          selector:
+            entity:
+              domain:
+                - input_number
+              multiple: false
 
     # -----------------------------------------------------------------------
     # Druck-Protokollierung / Print Logging
@@ -695,6 +740,44 @@ blueprint:
           default: false
           selector:
             boolean: {}
+        nozzle_1_type:
+          name: "Düsentyp Düse 1 / Nozzle 1 Type"
+          description: >-
+            Typ der Düse 1 (z. B. Stahl gehärtet, Messing).
+            Wird im Log protokolliert.
+
+            Type of nozzle 1 (e.g. hardened steel, brass).
+            Logged in the print log.
+          default: "Stahl gehärtet / Hardened Steel"
+          selector:
+            select:
+              options:
+                - "Stahl gehärtet / Hardened Steel"
+                - "Messing / Brass"
+                - "Edelstahl / Stainless Steel"
+                - "Kupfer / Copper"
+              custom_value: true
+              multiple: false
+              sort: false
+        nozzle_2_type:
+          name: "Düsentyp Düse 2 / Nozzle 2 Type"
+          description: >-
+            Typ der Düse 2 (z. B. Stahl gehärtet, Messing).
+            Wird im Log protokolliert.
+
+            Type of nozzle 2 (e.g. hardened steel, brass).
+            Logged in the print log.
+          default: "Stahl gehärtet / Hardened Steel"
+          selector:
+            select:
+              options:
+                - "Stahl gehärtet / Hardened Steel"
+                - "Messing / Brass"
+                - "Edelstahl / Stainless Steel"
+                - "Kupfer / Copper"
+              custom_value: true
+              multiple: false
+              sort: false
         nozzle_1_target_temp_sensor:
           name: "Düse 1 Zieltemperatur / Nozzle 1 Target Temp"
           description: >-
@@ -843,7 +926,7 @@ blueprint:
                 - input_datetime
               multiple: false
 
-  source_url: https://raw.githubusercontent.com/willhaggan/ha-bambu-print-tracker/main/bambu_update_main.yaml
+  source_url: https://raw.githubusercontent.com/Knartzpirat/ha-bambu-print-tracker/main/bambu_update_main.yaml
 
 # =========================================================================
 # Variablen
@@ -867,7 +950,7 @@ variables:
     'hours_btn': 'Stunden', 'left_nozzle': 'Linke Düse', 'right_nozzle': 'Rechte Düse',
     'nozzle_1': 'Düse 1', 'nozzle_2': 'Düse 2', 'date_lbl': 'Datum',
     'progress_lbl': 'Fortschritt', 'materials': 'Materialien',
-    'nozzle_size': 'Düsengröße', 'bed_temp': 'Betttemp.',
+    'nozzle_size': 'Düsengröße', 'nozzle_type': 'Düsentyp', 'bed_temp': 'Betttemp.',
     'print_bed': 'Druckbett', 'tool_module': 'Werkzeugmodul',
     'filament_cost': 'Filamentkosten', 'filament': 'Filament',
     'total': 'Gesamt', 'print_log': 'Druckprotokoll',
@@ -886,7 +969,7 @@ variables:
     'hours_btn': 'Hours', 'left_nozzle': 'Left Nozzle', 'right_nozzle': 'Right Nozzle',
     'nozzle_1': 'Nozzle 1', 'nozzle_2': 'Nozzle 2', 'date_lbl': 'Date',
     'progress_lbl': 'Progress', 'materials': 'Materials',
-    'nozzle_size': 'Nozzle size', 'bed_temp': 'Bed temp.',
+    'nozzle_size': 'Nozzle size', 'nozzle_type': 'Nozzle type', 'bed_temp': 'Bed temp.',
     'print_bed': 'Print bed', 'tool_module': 'Tool module',
     'filament_cost': 'Filament cost', 'filament': 'Filament',
     'total': 'Total', 'print_log': 'Print log',
@@ -905,7 +988,7 @@ variables:
     'hours_btn': 'Heures', 'left_nozzle': 'Buse gauche', 'right_nozzle': 'Buse droite',
     'nozzle_1': 'Buse 1', 'nozzle_2': 'Buse 2', 'date_lbl': 'Date',
     'progress_lbl': 'Progression', 'materials': 'Matériaux',
-    'nozzle_size': 'Taille buse', 'bed_temp': 'Temp. plateau',
+    'nozzle_size': 'Taille buse', 'nozzle_type': 'Type buse', 'bed_temp': 'Temp. plateau',
     'print_bed': 'Plateau', 'tool_module': 'Module outil',
     'filament_cost': 'Coût filament', 'filament': 'Filament',
     'total': 'Total', 'print_log': 'Journal impression',
@@ -924,7 +1007,7 @@ variables:
     'hours_btn': 'Horas', 'left_nozzle': 'Boquilla izquierda', 'right_nozzle': 'Boquilla derecha',
     'nozzle_1': 'Boquilla 1', 'nozzle_2': 'Boquilla 2', 'date_lbl': 'Fecha',
     'progress_lbl': 'Progreso', 'materials': 'Materiales',
-    'nozzle_size': 'Tamaño boquilla', 'bed_temp': 'Temp. cama',
+    'nozzle_size': 'Tamaño boquilla', 'nozzle_type': 'Tipo boquilla', 'bed_temp': 'Temp. cama',
     'print_bed': 'Cama de impresión', 'tool_module': 'Módulo herramienta',
     'filament_cost': 'Costo filamento', 'filament': 'Filamento',
     'total': 'Total', 'print_log': 'Registro de impresión',
@@ -933,6 +1016,7 @@ variables:
     } -%}
     {{- d.get(lang, d['en']) -}}
   # --- Bestehende Variablen ---
+  printer_name_var: !input printer_name
   printer_status_var: !input printer_status
   printer_progress_var: !input printer_progress
   printer_task_name_var: !input printer_task_name
@@ -972,10 +1056,15 @@ variables:
   printer_nozzle_2_temp_sensor_var: !input printer_nozzle_2_temp_sensor
   printer_bed_type_sensor_var: !input printer_bed_type_sensor
   printer_tool_module_sensor_var: !input printer_tool_module_sensor
+  # --- Neue Variablen: Gesamtzähler ---
+  total_energy_helper_var: !input total_energy_helper
+  total_cost_helper_var: !input total_cost_helper
   # --- Neue Variablen: Düsen-Wartung ---
   enable_nozzle_tracking_var: !input enable_nozzle_tracking
   nozzle_temp_threshold_var: !input nozzle_temp_threshold
   is_h2d_printer_var: !input is_h2d_printer
+  nozzle_1_type_var: !input nozzle_1_type
+  nozzle_2_type_var: !input nozzle_2_type
   nozzle_1_label: "{{ t.left_nozzle if is_h2d_printer_var else t.nozzle_1 }}"
   nozzle_2_label: "{{ t.right_nozzle if is_h2d_printer_var else t.nozzle_2 }}"
   nozzle_1_hours_helper_var: !input nozzle_1_hours_helper
@@ -1563,7 +1652,7 @@ action:
                       {% endif %}"
                 - action: "{{ notify_service }}"
                   data:
-                    title: "{{ t.print_update }} | {{ states(printer_task_name_var) }}"
+                    title: "{{ printer_name_var }} – {{ t.print_update }} | {{ states(printer_task_name_var) }}"
                     message: "{{ t.print_progress }} | {{ states(printer_progress_var) | int(0) }} % {% if
                       printer_remaining_time_var %} {% set remain_state =
                       states(printer_remaining_time_var) %} {% if remain_state
@@ -1690,7 +1779,7 @@ action:
                       {% endif %}"
                 - action: "{{ notify_service }}"
                   data:
-                    title: "{{ t.log_name }} {{ t.complete if trigger.id == 'Print Complete' else
+                    title: "{{ printer_name_var }} – {{ t.log_name }} {{ t.complete if trigger.id == 'Print Complete' else
                       t.failed }} – {{ states(printer_task_name_var) }}"
                     message: "{% set total_weight = states(printer_weight_var) | string |
                       replace(',', '.') | float(0) %} {% set progress =
@@ -1872,7 +1961,7 @@ action:
                               {% endif %}"
                         - action: "{{ notify_service }}"
                           data:
-                            title: "🔧 {{ t.nozzle_maint }} – {{ nozzle_1_label }}"
+                            title: "🔧 {{ printer_name_var }} – {{ t.nozzle_maint }} – {{ nozzle_1_label }}"
                             message: >-
                               {{ nozzle_1_label }}
                               {{ t.nozzle_msg | replace('[H]', nozzle_1_current_h | round(1) | string) | replace('[I]', nozzle_1_maintenance_interval_var | string) }}
@@ -1935,7 +2024,7 @@ action:
                               {% endif %}"
                         - action: "{{ notify_service }}"
                           data:
-                            title: "🔧 {{ t.nozzle_maint }} – {{ nozzle_2_label }}"
+                            title: "🔧 {{ printer_name_var }} – {{ t.nozzle_maint }} – {{ nozzle_2_label }}"
                             message: >-
                               {{ nozzle_2_label }}
                               {{ t.nozzle_msg | replace('[H]', nozzle_2_current_h | round(1) | string) | replace('[I]', nozzle_2_maintenance_interval_var | string) }}
@@ -2030,6 +2119,9 @@ action:
                         states(printer_nozzle_2_temp_sensor_var) not in
                         ['unknown','unavailable',''] %}| Ø {{ nozzle_2_label }}: {{
                         states(printer_nozzle_2_temp_sensor_var) }}°C{% endif %}
+                        {% if enable_nozzle_tracking_var %}| {{ t.nozzle_type }}:
+                        {{ nozzle_1_label }}={{ nozzle_1_type_var }},
+                        {{ nozzle_2_label }}={{ nozzle_2_type_var }}{% endif %}
                         {% if printer_bed_type_sensor_var != '' and
                         states(printer_bed_type_sensor_var) not in
                         ['unknown','unavailable',''] %}| {{ t.print_bed }}: {{
@@ -2047,7 +2139,7 @@ action:
                   # Logbuch-Eintrag
                   - action: logbook.log
                     data:
-                      name: "{{ t.log_name }} – {{ states(printer_task_name_var) }}"
+                      name: "{{ printer_name_var }} – {{ t.log_name }} – {{ states(printer_task_name_var) }}"
                       message: "{{ log_message }}"
                       entity_id: "{{ log_helper_entity_var }}" # ← Apostroph am Ende fehlt!
                   - action: input_text.set_value
@@ -2062,7 +2154,57 @@ action:
                         sequence:
                           - action: persistent_notification.create
                             data:
-                              title: "📋 {{ t.print_log }} – {{ states(printer_task_name_var) }}"
+                              title: "📋 {{ printer_name_var }} – {{ t.print_log }} – {{ states(printer_task_name_var) }}"
                               message: "{{ log_message }}"
                               notification_id: "bambu_log_{{ states(printer_task_name_var) | slugify }}_{{
                                 now().timestamp() | int }}"
+
+          # =====================================================================
+          # Gesamtzähler aktualisieren (Energie + Kosten)
+          # =====================================================================
+          - variables:
+              print_total_weight: >-
+                {% set tw = states(printer_weight_var) | string | replace(',', '.') | float(0) %}
+                {% set prog = states(printer_progress_var) | string | replace(',', '.') | float(100)
+                   if trigger.id == 'Print failed' else 100.0 %}
+                {{ tw * (prog / 100) }}
+              print_fil_cost: >-
+                {{ (print_total_weight / 1000) * (filament_cost_per_kg_var | string | replace(',', '.') | float(0)) }}
+              print_energy_kwh: >-
+                {% if enable_energy_tracking_var and start_kwh_helper_var != '' %}
+                  {{ (states(energy_sensor_var) | string | replace(',', '.') | float(0) -
+                     states(start_kwh_helper_var) | string | replace(',', '.') | float(0)) }}
+                {% else %}
+                  0
+                {% endif %}
+              print_elec_price: >-
+                {% if enable_energy_tracking_var and start_kwh_helper_var != '' %}
+                  {% set dp = states(electricity_price_sensor_var) %}
+                  {{ dp | string | replace(',', '.') | float(static_electricity_price_var | string | replace(',', '.') | float(0))
+                     if dp not in ['unknown', 'unavailable', ''] else
+                     static_electricity_price_var | string | replace(',', '.') | float(0) }}
+                {% else %}
+                  0
+                {% endif %}
+              print_energy_cost: "{{ print_energy_kwh | float(0) * print_elec_price | float(0) }}"
+              print_total_cost: "{{ print_fil_cost | float(0) + print_energy_cost | float(0) }}"
+          # Gesamtenergie aktualisieren
+          - choose:
+              - conditions: "{{ total_energy_helper_var != '' and enable_energy_tracking_var }}"
+                sequence:
+                  - action: input_number.set_value
+                    target:
+                      entity_id: "{{ total_energy_helper_var }}"
+                    data:
+                      value: >-
+                        {{ (states(total_energy_helper_var) | float(0) + print_energy_kwh | float(0)) | round(2) }}
+          # Gesamtkosten aktualisieren
+          - choose:
+              - conditions: "{{ total_cost_helper_var != '' }}"
+                sequence:
+                  - action: input_number.set_value
+                    target:
+                      entity_id: "{{ total_cost_helper_var }}"
+                    data:
+                      value: >-
+                        {{ (states(total_cost_helper_var) | float(0) + print_total_cost | float(0)) | round(2) }}
