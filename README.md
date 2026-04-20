@@ -10,7 +10,7 @@ A Home Assistant blueprint to monitor Bambu Lab 3D prints with interactive mobil
 
 ### Notifications
 
-The blueprint sends **5 types of notifications**, all prefixed with your custom printer name:
+The blueprint sends **6 types of notifications**, all prefixed with your custom printer name:
 
 #### 1. Progress Notification (Mobile Push)
 Sent during printing at configurable intervals (e.g. every 5 % or 10 %).
@@ -60,6 +60,13 @@ Optional detailed log entry saved to the HA Logbook and/or shown as a persistent
 > | Ø Bed temp.: 58.2°C | Ø Left Nozzle: 213.5°C | Ø Right Nozzle: 210.1°C
 > | Print bed: Textured PEI | Filament cost: €0.25 | Energy: 0.15 kWh (€0.04) | Total: €0.29
 
+#### 6. Nozzle Reset Confirmation (Mobile Push)
+Sent when a nozzle reset button (`input_button`) is pressed. Requires confirmation before resetting.
+
+> **⚠️ Bambu Lab – Reset counter? – Left Nozzle**
+> Left Nozzle currently has 205.3h operating hours. Really reset to 0?
+> Buttons: ✅ Yes, reset · ❌ Cancel
+
 ### Notification Settings
 
 | Setting | Description |
@@ -88,6 +95,7 @@ Optional detailed log entry saved to the HA Logbook and/or shown as a persistent
 - **Operating Hours Tracking:** Counts hours per nozzle individually based on target temperature exceeding a configurable threshold (default: 100 °C). Resolution: 0.01 h (36 seconds).
 - **Nozzle Type Tracking:** Configurable nozzle type per nozzle (hardened steel, brass, stainless steel, copper, or custom). Logged in print log entries.
 - **Maintenance Reminders:** Configurable interval per nozzle with mobile notification including "Done" and "Snooze" buttons.
+- **Reset Button:** Optional `input_button` helper per nozzle. When pressed, a confirmation notification is sent to your phone (“Really reset to 0?”). Only after confirming, the operating hours counter resets. Alternatively, you can always manually set the `input_number` hours helper to 0 in the HA UI.
 - **H2D Labels:** Optionally replaces "Nozzle 1/2" with "Left/Right Nozzle" labels.
 
 ### Internationalization
@@ -115,6 +123,7 @@ Optional detailed log entry saved to the HA Logbook and/or shown as a persistent
 | Nozzle 1/2 Heating Start | `input_number` (min: 0, max: 9999999999, step: 1) | Stores Unix timestamp when nozzle starts heating |
 | Nozzle 1/2 Hours | `input_number` (min: 0, max: 10000, step: 0.01, unit: h) | Accumulated operating hours per nozzle |
 | Nozzle 1/2 Snooze | `input_datetime` (Date + Time) | Snooze maintenance reminders |
+| Nozzle 1/2 Reset Button | `input_button` | Trigger nozzle hours reset with confirmation |
 
 ---
 
