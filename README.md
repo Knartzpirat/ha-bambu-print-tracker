@@ -117,7 +117,10 @@ Sent when a nozzle reset button (`input_button`) is pressed. Requires confirmati
 | Snooze Helper | `input_datetime` (Date + Time) | Safe snooze for progress muting |
 | Start kWh Helper | `input_number` (min: 0, max: 999999, step: 0.01, unit: kWh) | Stores energy meter reading at print start |
 | Total Energy Helper | `input_number` (min: 0, max: 999999, step: 0.01, unit: kWh) | Cumulative energy consumption across all prints |
-| Total Cost Helper | `input_number` (min: 0, max: 999999, step: 0.01) | Cumulative total costs across all prints |
+| Total Cost Helper | `input_number` (min: 0, max: 999999, step: 0.01) | Cumulative total costs (filament + energy) across all prints |
+| Total Energy Cost Helper | `input_number` (min: 0, max: 999999, step: 0.01) | Cumulative electricity costs across all prints |
+| Total Filament Usage Helper | `input_number` (min: 0, max: 999999, step: 0.01, unit: g) | Cumulative filament usage in grams across all prints |
+| Total Filament Cost Helper | `input_number` (min: 0, max: 999999, step: 0.01) | Cumulative filament costs across all prints |
 | Filament Log Helper | `input_text` (max 255) | Collects filament names used during a print |
 | Print Log Helper | `input_text` (max 255) | Stores last log entry & links logbook entries |
 | Nozzle 1/2 Heating Start | `input_number` (min: 0, max: 9999999999, step: 1) | Stores Unix timestamp when nozzle starts heating |
