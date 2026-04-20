@@ -76,11 +76,17 @@ blueprint:
         printer_name:
           name: "Druckername / Printer Name"
           description: >-
-            Frei wählbarer Name des Druckers. Wird in allen
-            Benachrichtigungen und Log-Einträgen angezeigt.
+            Frei wählbarer Name oder Entität des Druckers.
+            Wird in allen Benachrichtigungen und Log-Einträgen angezeigt.
+            Text = fester Name (z.B. "Bambu X1C").
+            Entität = dynamischer Name aus einem Sensor/Input
+            (z.B. input_text.printer_name).
 
-            Custom name for your printer. Shown in all
-            notifications and log entries.
+            Custom name or entity for your printer.
+            Shown in all notifications and log entries.
+            Text = fixed name (e.g. "Bambu X1C").
+            Entity = dynamic name from a sensor/input
+            (e.g. input_text.printer_name).
           default: "Bambu Lab"
           selector:
             text:
@@ -260,13 +266,13 @@ blueprint:
             Text für den ersten Benachrichtigungsbutton.
 
             Text for the first notification button.
-          default: Bambu App öffnen
+          default: Open Bambu App
           selector:
             select:
               options:
-                - Bambu App öffnen
-                - Home Assistant öffnen
-                - Drucker-Dashboard öffnen
+                - Open Bambu App
+                - Open Home Assistant
+                - Open Printer Dashboard
               custom_value: true
               multiple: false
               sort: false
@@ -295,13 +301,13 @@ blueprint:
             Text für die zweite Schaltfläche, wenn eine Kamera ausgewählt ist.
 
             Text for the second button when a camera is selected.
-          default: Kamera anzeigen
+          default: Show Camera
           selector:
             select:
               options:
-                - Kamera anzeigen
-                - Bambu App öffnen
-                - Home Assistant öffnen
+                - Show Camera
+                - Open Bambu App
+                - Open Home Assistant
               custom_value: true
               multiple: false
               sort: false
@@ -311,12 +317,12 @@ blueprint:
             Text für die zweite Schaltfläche, wenn KEINE Kamera ausgewählt ist.
 
             Text for the second button when NO camera is selected.
-          default: Home Assistant öffnen
+          default: Open Home Assistant
           selector:
             select:
               options:
-                - Home Assistant öffnen
-                - Drucker-Dashboard öffnen
+                - Open Home Assistant
+                - Open Printer Dashboard
               custom_value: true
               multiple: false
               sort: false
@@ -383,7 +389,7 @@ blueprint:
           description: >-
             Text für die dritte Schaltfläche im Modus „Custom Action".
             Text for the third button in "Custom Action" mode.
-          default: Benutzerdefinierte Aktion ausführen
+          default: Run Custom Action
           selector:
             text:
               multiline: false
@@ -1069,7 +1075,12 @@ variables:
     } -%}
     {{- d.get(lang, d['en']) -}}
   # --- Bestehende Variablen ---
-  printer_name_var: !input printer_name
+  printer_name_input: !input printer_name
+  printer_name_var: >-
+    {{ states(printer_name_input) if printer_name_input.startswith('input_')
+       or printer_name_input.startswith('sensor.')
+       or printer_name_input.startswith('text.')
+       else printer_name_input }}
   printer_status_var: !input printer_status
   printer_progress_var: !input printer_progress
   printer_task_name_var: !input printer_task_name
