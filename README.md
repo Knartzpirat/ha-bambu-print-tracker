@@ -29,7 +29,7 @@ Sent when a print finishes successfully.
 
 > **Bambu Lab – 3D Print Complete – Benchy**
 > ⏱️ Duration: 47 min
-> 📊 Filament usage: 12.3 g Energy: 0.15 kWh
+> 📊 Filament usage: 0.0123 kg Energy: 0.15 kWh
 > 💰 Cost breakdown
 > Filament: €0.25 · Energy: €0.04
 > Total cost: €0.29
@@ -40,7 +40,7 @@ Sent when a print fails. Includes the progress percentage at failure.
 > **Bambu Lab – 3D Print Failed – Benchy**
 > ⚠️ Failed at 73%
 > ⏱️ Duration: 34 min
-> 📊 Filament usage: 9.0 g Energy: 0.11 kWh
+> 📊 Filament usage: 0.009 kg Energy: 0.11 kWh
 > 💰 Filament: €0.18 · Energy: €0.03 · Total cost: €0.21
 
 #### 4. Nozzle Maintenance Reminder (Mobile Push)
@@ -55,7 +55,7 @@ Optional detailed log entry saved to the HA Logbook and/or shown as a persistent
 
 > **📋 Bambu Lab – Print log – Benchy**
 > ✅ Benchy | Date: 2026-04-20 14:35 | Duration: 0h 47m | Progress: 100%
-> | Filament: 12.3g | Materials: PLA Basic, PLA Silk | Nozzle size: 0.4 mm
+> | Filament: 0.0123 kg | Materials: PLA Basic, PLA Silk | Nozzle size: 0.4 mm
 > | Nozzle type: Left Nozzle=Hardened Steel, Right Nozzle=Brass
 > | Ø Bed temp.: 58.2°C | Ø Left Nozzle: 213.5°C | Ø Right Nozzle: 210.1°C
 > | Print bed: Textured PEI | Filament cost: €0.25 | Energy: 0.15 kWh (€0.04) | Total: €0.29
@@ -81,7 +81,7 @@ Sent when a nozzle reset button (`input_button`) is pressed. Requires confirmati
 | **Snooze Helper** | `input_datetime` for safe progress muting |
 
 ### Cost & Energy Tracking
-- **Filament Costs:** Automatic calculation based on print weight and configurable cost per kg.
+- **Filament Costs:** Automatic calculation based on print weight and configurable cost per kg. Display unit is selectable (kg or g, default: kg).
 - **Energy Costs:** Integration with smart plugs (kWh sensors). Supports both static pricing and dynamic price sensors (e.g. Tibber, aWATTar).
 - **Cumulative Counters:** Optional `input_number` helpers to track total energy consumption (kWh) and total costs (filament + energy) across all prints.
 
