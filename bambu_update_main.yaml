@@ -1054,7 +1054,8 @@ variables:
     'reset_yes': 'Ja, zurücksetzen', 'reset_no': 'Abbrechen',
     'btn_bambu_app': 'Bambu App öffnen', 'btn_open_ha': 'HA öffnen', 'btn_dashboard': 'Drucker-Dashboard', 'btn_camera': 'Kamera anzeigen',
     'nt_hardened_steel': 'Gehärteter Stahl', 'nt_stainless_steel': 'Edelstahl', 'nt_tungsten_carbide': 'Wolframcarbid',
-    'nt_hf_hardened_steel': 'Gehärteter Stahl – High Flow', 'nt_hf_stainless_steel': 'Edelstahl – High Flow', 'nt_hf_tungsten_carbide': 'Wolframkarbid – High Flow'
+    'nt_hf_hardened_steel': 'Gehärteter Stahl – High Flow', 'nt_hf_stainless_steel': 'Edelstahl – High Flow', 'nt_hf_tungsten_carbide': 'Wolframkarbid – High Flow',
+    'bp_textured': 'Strukturierte Platte', 'bp_cool': 'Kühlplatte / PLA-Platte', 'bp_hot': 'Glatte PEI-Platte / Hochtemp.', 'bp_eng': 'Technische Platte', 'bp_supertack': 'Cool Plate SuperTack'
     },
     'en': {
     'print_update': '3D Print Update', 'print_progress': 'Print progress',
@@ -1078,7 +1079,8 @@ variables:
     'reset_yes': 'Yes, reset', 'reset_no': 'Cancel',
     'btn_bambu_app': 'Open Bambu App', 'btn_open_ha': 'Open Home Assistant', 'btn_dashboard': 'Open Printer Dashboard', 'btn_camera': 'Show Camera',
     'nt_hardened_steel': 'Hardened Steel', 'nt_stainless_steel': 'Stainless Steel', 'nt_tungsten_carbide': 'Tungsten Carbide',
-    'nt_hf_hardened_steel': 'High Flow Hardened Steel', 'nt_hf_stainless_steel': 'High Flow Stainless Steel', 'nt_hf_tungsten_carbide': 'High Flow Tungsten Carbide'
+    'nt_hf_hardened_steel': 'High Flow Hardened Steel', 'nt_hf_stainless_steel': 'High Flow Stainless Steel', 'nt_hf_tungsten_carbide': 'High Flow Tungsten Carbide',
+    'bp_textured': 'Textured Plate', 'bp_cool': 'Cool Plate / PLA Plate', 'bp_hot': 'Smooth PEI Plate / High Temp Plate', 'bp_eng': 'Engineering Plate', 'bp_supertack': 'Cool Plate SuperTack'
     },
     'fr': {
     'print_update': 'Impression 3D – Mise à jour', 'print_progress': 'Progression',
@@ -1102,7 +1104,8 @@ variables:
     'reset_yes': 'Oui, réinitialiser', 'reset_no': 'Annuler',
     'btn_bambu_app': 'Ouvrir Bambu App', 'btn_open_ha': 'Ouvrir Home Assistant', 'btn_dashboard': 'Tableau de bord', 'btn_camera': 'Afficher caméra',
     'nt_hardened_steel': 'Acier trempé', 'nt_stainless_steel': 'Acier inoxydable', 'nt_tungsten_carbide': 'Carbure de tungstène',
-    'nt_hf_hardened_steel': 'Acier trempé High Flow', 'nt_hf_stainless_steel': 'Acier inox. High Flow', 'nt_hf_tungsten_carbide': 'Carbure de tungstène High Flow'
+    'nt_hf_hardened_steel': 'Acier trempé High Flow', 'nt_hf_stainless_steel': 'Acier inox. High Flow', 'nt_hf_tungsten_carbide': 'Carbure de tungstène High Flow',
+    'bp_textured': 'Plateau texturé', 'bp_cool': 'Plaque froide / PLA', 'bp_hot': 'PEI lisse / Haute temp.', 'bp_eng': 'Plateau technique', 'bp_supertack': 'Cool Plate SuperTack'
     },
     'es': {
     'print_update': 'Impresión 3D – Actualización', 'print_progress': 'Progreso',
@@ -1126,7 +1129,8 @@ variables:
     'reset_yes': 'Sí, reiniciar', 'reset_no': 'Cancelar',
     'btn_bambu_app': 'Abrir Bambu App', 'btn_open_ha': 'Abrir Home Assistant', 'btn_dashboard': 'Panel de impresora', 'btn_camera': 'Ver cámara',
     'nt_hardened_steel': 'Acero endurecido', 'nt_stainless_steel': 'Acero inoxidable', 'nt_tungsten_carbide': 'Carburo de tungsteno',
-    'nt_hf_hardened_steel': 'Acero endurecido High Flow', 'nt_hf_stainless_steel': 'Acero inox. High Flow', 'nt_hf_tungsten_carbide': 'Carburo de tungsteno High Flow'
+    'nt_hf_hardened_steel': 'Acero endurecido High Flow', 'nt_hf_stainless_steel': 'Acero inox. High Flow', 'nt_hf_tungsten_carbide': 'Carburo de tungsteno High Flow',
+    'bp_textured': 'Placa texturizada', 'bp_cool': 'Placa fría / PLA', 'bp_hot': 'PEI liso / Alta temp.', 'bp_eng': 'Placa de ingeniería', 'bp_supertack': 'Cool Plate SuperTack'
     }
     } -%}
     {{- d.get(lang, d['en']) -}}
@@ -1180,6 +1184,11 @@ variables:
   printer_nozzle_1_temp_sensor_var: !input printer_nozzle_1_temp_sensor
   printer_nozzle_2_temp_sensor_var: !input printer_nozzle_2_temp_sensor
   printer_bed_type_sensor_var: !input printer_bed_type_sensor
+  printer_bed_type_display_var: >-
+    {% set raw = states(printer_bed_type_sensor_var) if printer_bed_type_sensor_var != '' else '' %}
+    {% set m = {'textured_plate': t.bp_textured, 'cool_plate': t.bp_cool,
+    'hot_plate': t.bp_hot, 'eng_plate': t.bp_eng, 'supertack_plate': t.bp_supertack} %}
+    {{ m.get(raw, raw) }}
   printer_tool_module_sensor_var: !input printer_tool_module_sensor
   # --- Neue Variablen: Gesamtzähler ---
   total_energy_helper_var: !input total_energy_helper
@@ -2498,7 +2507,7 @@ action:
                         {% if printer_bed_type_sensor_var != '' and
                         states(printer_bed_type_sensor_var) not in
                         ['unknown','unavailable',''] %}| {{ t.print_bed }}: {{
-                        states(printer_bed_type_sensor_var) }}{% endif %} {% if
+                        printer_bed_type_display_var }}{% endif %} {% if
                         printer_tool_module_sensor_var != '' and
                         states(printer_tool_module_sensor_var) not in
                         ['unknown','unavailable','none','None',''] %}|
