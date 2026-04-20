@@ -2203,17 +2203,14 @@ action:
                       states(printer_start_time_var) | as_timestamp(0)) / 60) |
                       int(0) }} min
 
-                      📊 {{ t.filament_usage }}: {{ weight }} g {% if
+                      📊 {{ t.filament_usage }}: {{ weight }} g{% if
+                      fil_cost > 0 %} ({{ \"%.2f\" | format(fil_cost) }}{{ currency }}){% endif %} {% if
                       enable_energy_tracking_var and start_kwh_helper_var != ''
-                      %}{{ t.energy }}: {{ usage | round(2) }} kWh{% endif %}
+                      %}{{ t.energy }}: {{ usage | round(2) }} kWh{% if
+                      energy_cost > 0 %} ({{ \"%.2f\" | format(energy_cost) }}{{ currency }}){% endif %}{% endif %}
 
-                      {% if fil_cost > 0 or (enable_energy_tracking_var and
-                      start_kwh_helper_var != '') %} 💰 {{ t.cost_breakdown }} {%
-                      if fil_cost > 0 %}{{ t.filament }}: {{ \"%.2f\" |
-                      format(fil_cost) }}{{ currency }}{% endif %} {% if
-                      enable_energy_tracking_var and start_kwh_helper_var != ''
-                      %}{{ t.energy }}: {{ \"%.2f\" | format(energy_cost) }}{{ currency }}{% endif
-                      %} {{ t.total_cost }}: {{ \"%.2f\" | format(fil_cost +
+                      {% if (fil_cost > 0) or (enable_energy_tracking_var and
+                      start_kwh_helper_var != '') %} 💰 {{ t.total_cost }}: {{ \"%.2f\" | format(fil_cost +
                       energy_cost) }}{{ currency }} {% endif %}\n"
                     data:
                       color: "{{ 'green' if trigger.id == 'Print Complete' else 'red' }}"
@@ -2485,7 +2482,7 @@ action:
                         now().strftime(t.date_fmt) }} | {{ t.duration }}: {{
                         (log_duration_min // 60) }}h {{ (log_duration_min % 60)
                         }}m | {{ t.progress_lbl }}: {{ log_progress | round(0) | int }}%
-                        | Filament: {{ log_weight }} g {% if
+                        | Filament: {{ log_weight }} g{% if log_fil_cost > 0 %} ({{ "%.2f" | format(log_fil_cost) }}{{ currency }}){% endif %} {% if
                         log_filaments != '–' %}| {{ t.materials }}: {{ log_filaments
                         }}{% endif %} {% if printer_nozzle_size_sensor_var != ''
                         and states(printer_nozzle_size_sensor_var) not in
@@ -2514,12 +2511,12 @@ action:
                         states(printer_tool_module_sensor_var) not in
                         ['unknown','unavailable','none','None',''] %}|
                         {{ t.tool_module }}: {{ states(printer_tool_module_sensor_var)
-                        }}{% endif %} | {{ t.filament_cost }}: {{ "%.2f" |
-                        format(log_fil_cost) }}{{ currency }} {% if enable_energy_tracking_var
+                        }}{% endif %} {% if enable_energy_tracking_var
                         and start_kwh_helper_var != '' %}| {{ t.energy }}: {{
                         log_usage_kwh | round(2) }} kWh ({{ "%.2f" |
-                        format(log_energy_cost) }}{{ currency }}){% endif %} | {{ t.total }}: {{
-                        "%.2f" | format(log_fil_cost + log_energy_cost) }}{{ currency }}
+                        format(log_energy_cost) }}{{ currency }}){% endif %} {%
+                        if (log_fil_cost > 0) or (enable_energy_tracking_var and start_kwh_helper_var != '') %}| {{ t.total }}: {{
+                        "%.2f" | format(log_fil_cost + log_energy_cost) }}{{ currency }}{% endif %}
                   # Logbuch-Eintrag
                   - action: logbook.log
                     data:
