@@ -425,6 +425,23 @@ blueprint:
               max: 100.0
               step: 0.01
               mode: box
+        filament_weight_unit:
+          name: "Filamenteinheit / Filament Weight Unit"
+          description: >-
+            Einheit für die Anzeige des Filamentverbrauchs in
+            Benachrichtigungen und Logs.
+
+            Unit for displaying filament usage in notifications and logs.
+          default: kg
+          selector:
+            select:
+              options:
+                - label: Kilogramm (kg)
+                  value: kg
+                - label: Gramm (g)
+                  value: g
+              multiple: false
+              sort: false
     energy_tracking_section:
       name: "Energie-Tracking / Energy Tracking"
       icon: mdi:lightning-bolt
@@ -530,6 +547,48 @@ blueprint:
             input_number helper (min: 0, max: 999999, step: 0.01).
             Cumulative total costs (filament + energy) across all prints.
             Automatically incremented after each print.
+          default: ""
+          selector:
+            entity:
+              domain:
+                - input_number
+              multiple: false
+        total_energy_cost_helper:
+          name: "Gesamt-Energiekosten Helper / Total Energy Cost Helper (Optional)"
+          description: >-
+            input_number Helper (min: 0, max: 999999, step: 0.01).
+            Kumulierte Stromkosten über alle Drucke.
+
+            input_number helper (min: 0, max: 999999, step: 0.01).
+            Cumulative electricity costs across all prints.
+          default: ""
+          selector:
+            entity:
+              domain:
+                - input_number
+              multiple: false
+        total_fil_usage_helper:
+          name: "Gesamt-Filamentverbrauch Helper / Total Filament Usage Helper (Optional)"
+          description: >-
+            input_number Helper (min: 0, max: 999999, step: 0.01, unit: g).
+            Kumulierter Filamentverbrauch in Gramm über alle Drucke.
+
+            input_number helper (min: 0, max: 999999, step: 0.01, unit: g).
+            Cumulative filament usage in grams across all prints.
+          default: ""
+          selector:
+            entity:
+              domain:
+                - input_number
+              multiple: false
+        total_fil_cost_helper:
+          name: "Gesamt-Filamentkosten Helper / Total Filament Cost Helper (Optional)"
+          description: >-
+            input_number Helper (min: 0, max: 999999, step: 0.01).
+            Kumulierte Filamentkosten über alle Drucke.
+
+            input_number helper (min: 0, max: 999999, step: 0.01).
+            Cumulative filament costs across all prints.
           default: ""
           selector:
             entity:
@@ -949,7 +1008,7 @@ blueprint:
             the nozzle 1 operating hours counter resets to 0.
             Alternatively, you can manually set the counter
             to 0 via the input_number helper at any time.
-          default: ""
+          default: []
           selector:
             entity:
               domain:
@@ -970,7 +1029,7 @@ blueprint:
             the nozzle 2 operating hours counter resets to 0.
             Alternatively, you can manually set the counter
             to 0 via the input_number helper at any time.
-          default: ""
+          default: []
           selector:
             entity:
               domain:
@@ -1097,6 +1156,7 @@ variables:
   start_kwh_helper_var: !input start_kwh_helper
   progress_interval_var: !input progress_interval
   filament_cost_per_kg_var: !input filament_cost_per_kg
+  filament_weight_unit_var: !input filament_weight_unit
   action_1_title_var: !input action_1_title
   action_1_uri_var: !input action_1_uri
   action_2_camera_title_var: !input action_2_camera_title
@@ -1123,6 +1183,9 @@ variables:
   # --- Neue Variablen: Gesamtzähler ---
   total_energy_helper_var: !input total_energy_helper
   total_cost_helper_var: !input total_cost_helper
+  total_energy_cost_helper_var: !input total_energy_cost_helper
+  total_fil_usage_helper_var: !input total_fil_usage_helper
+  total_fil_cost_helper_var: !input total_fil_cost_helper
   # --- Neue Variablen: Düsen-Wartung ---
   enable_nozzle_tracking_var: !input enable_nozzle_tracking
   nozzle_temp_threshold_var: !input nozzle_temp_threshold
@@ -2119,7 +2182,7 @@ action:
                       states(printer_start_time_var) | as_timestamp(0)) / 60) |
                       int(0) }} min
 
-                      📊 {{ t.filament_usage }}: {{ weight | round(1) }} g {% if
+                      📊 {{ t.filament_usage }}: {% if filament_weight_unit_var == 'kg' %}{{ (weight / 1000) }} kg{% else %}{{ weight }} g{% endif %} {% if
                       enable_energy_tracking_var and start_kwh_helper_var != ''
                       %}{{ t.energy }}: {{ usage | round(2) }} kWh{% endif %}
 
@@ -2401,7 +2464,7 @@ action:
                         now().strftime(t.date_fmt) }} | {{ t.duration }}: {{
                         (log_duration_min // 60) }}h {{ (log_duration_min % 60)
                         }}m | {{ t.progress_lbl }}: {{ log_progress | round(0) | int }}%
-                        | Filament: {{ log_weight | round(1) }}g {% if
+                        | Filament: {% if filament_weight_unit_var == 'kg' %}{{ (log_weight / 1000) }} kg{% else %}{{ log_weight }} g{% endif %} {% if
                         log_filaments != '–' %}| {{ t.materials }}: {{ log_filaments
                         }}{% endif %} {% if printer_nozzle_size_sensor_var != ''
                         and states(printer_nozzle_size_sensor_var) not in
@@ -2508,3 +2571,33 @@ action:
                     data:
                       value: >-
                         {{ (states(total_cost_helper_var) | float(0) + print_total_cost | float(0)) | round(2) }}
+          # Gesamt-Energiekosten aktualisieren
+          - choose:
+              - conditions: "{{ total_energy_cost_helper_var != '' and enable_energy_tracking_var }}"
+                sequence:
+                  - action: input_number.set_value
+                    target:
+                      entity_id: "{{ total_energy_cost_helper_var }}"
+                    data:
+                      value: >-
+                        {{ (states(total_energy_cost_helper_var) | float(0) + print_energy_cost | float(0)) | round(2) }}
+          # Gesamt-Filamentverbrauch aktualisieren
+          - choose:
+              - conditions: "{{ total_fil_usage_helper_var != '' }}"
+                sequence:
+                  - action: input_number.set_value
+                    target:
+                      entity_id: "{{ total_fil_usage_helper_var }}"
+                    data:
+                      value: >-
+                        {{ (states(total_fil_usage_helper_var) | float(0) + print_total_weight | float(0)) | round(2) }}
+          # Gesamt-Filamentkosten aktualisieren
+          - choose:
+              - conditions: "{{ total_fil_cost_helper_var != '' }}"
+                sequence:
+                  - action: input_number.set_value
+                    target:
+                      entity_id: "{{ total_fil_cost_helper_var }}"
+                    data:
+                      value: >-
+                        {{ (states(total_fil_cost_helper_var) | float(0) + print_fil_cost | float(0)) | round(2) }}
