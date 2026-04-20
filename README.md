@@ -2,7 +2,7 @@
 
 A Home Assistant blueprint to monitor Bambu Lab 3D prints with interactive mobile notifications for progress, completion, and failures — including energy tracking, cost calculation, print logging, filament tracking, nozzle maintenance reminders, and multi-language support (Bambu H2D supported).
 
-<a href="https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fwillhaggan%2Fha-bambu-print-tracker%2Fblob%2Fmain%2Fbambu_update_main.yaml" target="_blank" rel="noreferrer noopener"><img src="https://my.home-assistant.io/badges/blueprint_import.svg" alt="Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled." /></a>
+<a href="https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FKnartzpirat%2Fha-bambu-print-tracker" target="_blank" rel="noreferrer noopener"><img src="https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg" alt="Open your Home Assistant instance and show the add app repository dialog with a specific repository URL pre-filled." /></a>
 
 ---
 
@@ -27,7 +27,7 @@ A Home Assistant blueprint to monitor Bambu Lab 3D prints with interactive mobil
 - **Optional Sensors:** Nozzle size, bed temperature, nozzle temperatures, bed type, and tool module status.
 
 ### Nozzle Maintenance (Bambu H2D)
-- **Operating Hours Tracking:** Automatically counts print hours per nozzle (skips laser/cutter jobs).
+- **Operating Hours Tracking:** Counts hours per nozzle individually based on target temperature exceeding a configurable threshold (default: 100 °C). Resolution: 0.01 h (36 seconds).
 - **Maintenance Reminders:** Configurable interval per nozzle with mobile notification including "Done" and "Snooze" buttons.
 - **H2D Labels:** Optionally replaces "Nozzle 1/2" with "Left/Right Nozzle" labels.
 
@@ -48,10 +48,11 @@ A Home Assistant blueprint to monitor Bambu Lab 3D prints with interactive mobil
 | Helper | Type | Purpose |
 |---|---|---|
 | Snooze Helper | `input_datetime` (Date + Time) | Safe snooze for progress muting |
-| Start kWh Helper | `input_number` | Stores energy meter reading at print start |
+| Start kWh Helper | `input_number` (min: 0, max: 999999, step: 0.01, unit: kWh) | Stores energy meter reading at print start |
 | Filament Log Helper | `input_text` (max 255) | Collects filament names used during a print |
 | Print Log Helper | `input_text` (max 255) | Stores last log entry & links logbook entries |
-| Nozzle 1/2 Hours | `input_number` (0–10000, step 0.01, unit: h) | Accumulated operating hours per nozzle |
+| Nozzle 1/2 Heating Start | `input_number` (min: 0, max: 9999999999, step: 1) | Stores Unix timestamp when nozzle starts heating |
+| Nozzle 1/2 Hours | `input_number` (min: 0, max: 10000, step: 0.01, unit: h) | Accumulated operating hours per nozzle |
 | Nozzle 1/2 Snooze | `input_datetime` (Date + Time) | Snooze maintenance reminders |
 
 ---
