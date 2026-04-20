@@ -110,8 +110,6 @@ blueprint:
             entity:
               domain:
                 - sensor
-              device_class:
-                - timestamp
               multiple: false
         printer_end_time:
           name: "Endzeit / End Time"
@@ -122,8 +120,6 @@ blueprint:
             entity:
               domain:
                 - sensor
-              device_class:
-                - timestamp
               multiple: false
         printer_remaining_time:
           name: "Verbleibende Zeit / Remaining Time (Optional)"
