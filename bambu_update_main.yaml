@@ -806,38 +806,38 @@ blueprint:
         nozzle_1_type:
           name: "Düsentyp Düse 1 / Nozzle 1 Type"
           description: >-
-            Typ der Düse 1 (z. B. Stahl gehärtet, Messing).
-            Wird im Log protokolliert.
+            Typ der Düse 1. Wird im Log protokolliert.
 
-            Type of nozzle 1 (e.g. hardened steel, brass).
-            Logged in the print log.
-          default: "Stahl gehärtet / Hardened Steel"
+            Type of nozzle 1. Logged in the print log.
+          default: "Hardened Steel"
           selector:
             select:
               options:
-                - "Stahl gehärtet / Hardened Steel"
-                - "Messing / Brass"
-                - "Edelstahl / Stainless Steel"
-                - "Kupfer / Copper"
+                - "Hardened Steel"
+                - "Stainless Steel"
+                - "Tungsten Carbide"
+                - "High Flow Hardened Steel"
+                - "High Flow Stainless Steel"
+                - "High Flow Tungsten Carbide"
               custom_value: true
               multiple: false
               sort: false
         nozzle_2_type:
           name: "Düsentyp Düse 2 / Nozzle 2 Type"
           description: >-
-            Typ der Düse 2 (z. B. Stahl gehärtet, Messing).
-            Wird im Log protokolliert.
+            Typ der Düse 2. Wird im Log protokolliert.
 
-            Type of nozzle 2 (e.g. hardened steel, brass).
-            Logged in the print log.
-          default: "Stahl gehärtet / Hardened Steel"
+            Type of nozzle 2. Logged in the print log.
+          default: "Hardened Steel"
           selector:
             select:
               options:
-                - "Stahl gehärtet / Hardened Steel"
-                - "Messing / Brass"
-                - "Edelstahl / Stainless Steel"
-                - "Kupfer / Copper"
+                - "Hardened Steel"
+                - "Stainless Steel"
+                - "Tungsten Carbide"
+                - "High Flow Hardened Steel"
+                - "High Flow Stainless Steel"
+                - "High Flow Tungsten Carbide"
               custom_value: true
               multiple: false
               sort: false
@@ -1061,7 +1061,10 @@ variables:
     'total': 'Gesamt', 'print_log': 'Druckprotokoll',
     'log_name': '3D-Druck', 'eg': 'z.B.', 'date_fmt': '%d.%m.%Y %H:%M',
     'reset_confirm': 'Zähler zurücksetzen?', 'reset_msg': '[N] hat aktuell [H]h Betriebsstunden. Wirklich auf 0 zurücksetzen?',
-    'reset_yes': 'Ja, zurücksetzen', 'reset_no': 'Abbrechen'
+    'reset_yes': 'Ja, zurücksetzen', 'reset_no': 'Abbrechen',
+    'btn_bambu_app': 'Bambu App öffnen', 'btn_open_ha': 'HA öffnen', 'btn_dashboard': 'Drucker-Dashboard', 'btn_camera': 'Kamera anzeigen',
+    'nt_hardened_steel': 'Gehärteter Stahl', 'nt_stainless_steel': 'Edelstahl', 'nt_tungsten_carbide': 'Wolframcarbid',
+    'nt_hf_hardened_steel': 'Gehärteter Stahl – High Flow', 'nt_hf_stainless_steel': 'Edelstahl – High Flow', 'nt_hf_tungsten_carbide': 'Wolframkarbid – High Flow'
     },
     'en': {
     'print_update': '3D Print Update', 'print_progress': 'Print progress',
@@ -1082,7 +1085,10 @@ variables:
     'total': 'Total', 'print_log': 'Print log',
     'log_name': '3D Print', 'eg': 'e.g.', 'date_fmt': '%Y-%m-%d %H:%M',
     'reset_confirm': 'Reset counter?', 'reset_msg': '[N] currently has [H]h operating hours. Really reset to 0?',
-    'reset_yes': 'Yes, reset', 'reset_no': 'Cancel'
+    'reset_yes': 'Yes, reset', 'reset_no': 'Cancel',
+    'btn_bambu_app': 'Open Bambu App', 'btn_open_ha': 'Open Home Assistant', 'btn_dashboard': 'Open Printer Dashboard', 'btn_camera': 'Show Camera',
+    'nt_hardened_steel': 'Hardened Steel', 'nt_stainless_steel': 'Stainless Steel', 'nt_tungsten_carbide': 'Tungsten Carbide',
+    'nt_hf_hardened_steel': 'High Flow Hardened Steel', 'nt_hf_stainless_steel': 'High Flow Stainless Steel', 'nt_hf_tungsten_carbide': 'High Flow Tungsten Carbide'
     },
     'fr': {
     'print_update': 'Impression 3D – Mise à jour', 'print_progress': 'Progression',
@@ -1103,7 +1109,10 @@ variables:
     'total': 'Total', 'print_log': 'Journal impression',
     'log_name': 'Impression 3D', 'eg': 'ex.', 'date_fmt': '%d/%m/%Y %H:%M',
     'reset_confirm': 'Réinitialiser compteur?', 'reset_msg': '[N] a actuellement [H]h de fonctionnement. Vraiment réinitialiser à 0?',
-    'reset_yes': 'Oui, réinitialiser', 'reset_no': 'Annuler'
+    'reset_yes': 'Oui, réinitialiser', 'reset_no': 'Annuler',
+    'btn_bambu_app': 'Ouvrir Bambu App', 'btn_open_ha': 'Ouvrir Home Assistant', 'btn_dashboard': 'Tableau de bord', 'btn_camera': 'Afficher caméra',
+    'nt_hardened_steel': 'Acier trempé', 'nt_stainless_steel': 'Acier inoxydable', 'nt_tungsten_carbide': 'Carbure de tungstène',
+    'nt_hf_hardened_steel': 'Acier trempé High Flow', 'nt_hf_stainless_steel': 'Acier inox. High Flow', 'nt_hf_tungsten_carbide': 'Carbure de tungstène High Flow'
     },
     'es': {
     'print_update': 'Impresión 3D – Actualización', 'print_progress': 'Progreso',
@@ -1124,7 +1133,10 @@ variables:
     'total': 'Total', 'print_log': 'Registro de impresión',
     'log_name': 'Impresión 3D', 'eg': 'ej.', 'date_fmt': '%d/%m/%Y %H:%M',
     'reset_confirm': '¿Reiniciar contador?', 'reset_msg': '[N] tiene actualmente [H]h de funcionamiento. ¿Reiniciar a 0?',
-    'reset_yes': 'Sí, reiniciar', 'reset_no': 'Cancelar'
+    'reset_yes': 'Sí, reiniciar', 'reset_no': 'Cancelar',
+    'btn_bambu_app': 'Abrir Bambu App', 'btn_open_ha': 'Abrir Home Assistant', 'btn_dashboard': 'Panel de impresora', 'btn_camera': 'Ver cámara',
+    'nt_hardened_steel': 'Acero endurecido', 'nt_stainless_steel': 'Acero inoxidable', 'nt_tungsten_carbide': 'Carburo de tungsteno',
+    'nt_hf_hardened_steel': 'Acero endurecido High Flow', 'nt_hf_stainless_steel': 'Acero inox. High Flow', 'nt_hf_tungsten_carbide': 'Carburo de tungsteno High Flow'
     }
     } -%}
     {{- d.get(lang, d['en']) -}}
@@ -1152,6 +1164,15 @@ variables:
   action_2_camera_title_var: !input action_2_camera_title
   action_2_fallback_title_var: !input action_2_fallback_title
   action_2_fallback_uri_var: !input action_2_fallback_uri
+  action_1_title_translated_var: >-
+    {% set m = {'Open Bambu App': t.btn_bambu_app, 'Open Home Assistant': t.btn_open_ha, 'Open Printer Dashboard': t.btn_dashboard} %}
+    {{ m.get(action_1_title_var, action_1_title_var) }}
+  action_2_camera_title_translated_var: >-
+    {% set m = {'Show Camera': t.btn_camera, 'Open Bambu App': t.btn_bambu_app, 'Open Home Assistant': t.btn_open_ha} %}
+    {{ m.get(action_2_camera_title_var, action_2_camera_title_var) }}
+  action_2_fallback_title_translated_var: >-
+    {% set m = {'Open Home Assistant': t.btn_open_ha, 'Open Printer Dashboard': t.btn_dashboard} %}
+    {{ m.get(action_2_fallback_title_var, action_2_fallback_title_var) }}
   button_3_mode_var: !input button_3_mode
   snooze_datetime_helper_var: !input snooze_datetime_helper
   button_3_custom_title_var: !input button_3_custom_title
@@ -1182,6 +1203,16 @@ variables:
   is_h2d_printer_var: !input is_h2d_printer
   nozzle_1_type_var: !input nozzle_1_type
   nozzle_2_type_var: !input nozzle_2_type
+  nozzle_1_type_display_var: >-
+    {% set m = {'Hardened Steel': t.nt_hardened_steel, 'Stainless Steel': t.nt_stainless_steel,
+    'Tungsten Carbide': t.nt_tungsten_carbide, 'High Flow Hardened Steel': t.nt_hf_hardened_steel,
+    'High Flow Stainless Steel': t.nt_hf_stainless_steel, 'High Flow Tungsten Carbide': t.nt_hf_tungsten_carbide} %}
+    {{ m.get(nozzle_1_type_var, nozzle_1_type_var) }}
+  nozzle_2_type_display_var: >-
+    {% set m = {'Hardened Steel': t.nt_hardened_steel, 'Stainless Steel': t.nt_stainless_steel,
+    'Tungsten Carbide': t.nt_tungsten_carbide, 'High Flow Hardened Steel': t.nt_hf_hardened_steel,
+    'High Flow Stainless Steel': t.nt_hf_stainless_steel, 'High Flow Tungsten Carbide': t.nt_hf_tungsten_carbide} %}
+    {{ m.get(nozzle_2_type_var, nozzle_2_type_var) }}
   nozzle_1_label: "{{ t.left_nozzle if is_h2d_printer_var else t.nozzle_1 }}"
   nozzle_2_label: "{{ t.right_nozzle if is_h2d_printer_var else t.nozzle_2 }}"
   nozzle_1_hours_helper_var: !input nozzle_1_hours_helper
@@ -2040,11 +2071,11 @@ action:
                         \  [
 
                         \    {\"action\": \"URI\", \"title\":
-                        action_1_title_var, \"uri\": action_1_uri_var},
+                        action_1_title_translated_var, \"uri\": action_1_uri_var},
 
                         \    {\"action\": \"URI\", \"title\":
-                        action_2_camera_title_var if printer_camera_var else
-                        action_2_fallback_title_var, \"uri\": (\"entityId:\" ~
+                        action_2_camera_title_translated_var if printer_camera_var else
+                        action_2_fallback_title_translated_var, \"uri\": (\"entityId:\" ~
                         printer_camera_var) if printer_camera_var else
                         action_2_fallback_uri_var}
 
@@ -2178,12 +2209,12 @@ action:
 
                       {% if fil_cost > 0 or (enable_energy_tracking_var and
                       start_kwh_helper_var != '') %} 💰 {{ t.cost_breakdown }} {%
-                      if fil_cost > 0 %}{{ t.filament }}: {{ currency }}{{ \"%.2f\" |
-                      format(fil_cost) }}{% endif %} {% if
+                      if fil_cost > 0 %}{{ t.filament }}: {{ \"%.2f\" |
+                      format(fil_cost) }}{{ currency }}{% endif %} {% if
                       enable_energy_tracking_var and start_kwh_helper_var != ''
-                      %}{{ t.energy }}: {{ currency }}{{ \"%.2f\" | format(energy_cost) }}{% endif
-                      %} {{ t.total_cost }}: {{ currency }}{{ \"%.2f\" | format(fil_cost +
-                      energy_cost) }} {% endif %}\n"
+                      %}{{ t.energy }}: {{ \"%.2f\" | format(energy_cost) }}{{ currency }}{% endif
+                      %} {{ t.total_cost }}: {{ \"%.2f\" | format(fil_cost +
+                      energy_cost) }}{{ currency }} {% endif %}\n"
                     data:
                       color: "{{ 'green' if trigger.id == 'Print Complete' else 'red' }}"
                       icon_url: "{% if printer_camera_var %}
@@ -2201,11 +2232,11 @@ action:
                         \  [
 
                         \    {\"action\": \"URI\", \"title\":
-                        action_1_title_var, \"uri\": action_1_uri_var},
+                        action_1_title_translated_var, \"uri\": action_1_uri_var},
 
                         \    {\"action\": \"URI\", \"title\":
-                        action_2_camera_title_var if printer_camera_var else
-                        action_2_fallback_title_var, \"uri\": (\"entityId:\" ~
+                        action_2_camera_title_translated_var if printer_camera_var else
+                        action_2_fallback_title_translated_var, \"uri\": (\"entityId:\" ~
                         printer_camera_var) if printer_camera_var else
                         action_2_fallback_uri_var}
 
@@ -2473,8 +2504,8 @@ action:
                         ['unknown','unavailable',''] %}| Ø {{ nozzle_2_label }}: {{
                         states(printer_nozzle_2_temp_sensor_var) }}°C{% endif %}
                         {% if enable_nozzle_tracking_var %}| {{ t.nozzle_type }}:
-                        {{ nozzle_1_label }}={{ nozzle_1_type_var }},
-                        {{ nozzle_2_label }}={{ nozzle_2_type_var }}{% endif %}
+                        {{ nozzle_1_label }}={{ nozzle_1_type_display_var }},
+                        {{ nozzle_2_label }}={{ nozzle_2_type_display_var }}{% endif %}
                         {% if printer_bed_type_sensor_var != '' and
                         states(printer_bed_type_sensor_var) not in
                         ['unknown','unavailable',''] %}| {{ t.print_bed }}: {{
@@ -2483,12 +2514,12 @@ action:
                         states(printer_tool_module_sensor_var) not in
                         ['unknown','unavailable','none','None',''] %}|
                         {{ t.tool_module }}: {{ states(printer_tool_module_sensor_var)
-                        }}{% endif %} | {{ t.filament_cost }}: {{ currency }}{{ "%.2f" |
-                        format(log_fil_cost) }} {% if enable_energy_tracking_var
+                        }}{% endif %} | {{ t.filament_cost }}: {{ "%.2f" |
+                        format(log_fil_cost) }}{{ currency }} {% if enable_energy_tracking_var
                         and start_kwh_helper_var != '' %}| {{ t.energy }}: {{
-                        log_usage_kwh | round(2) }} kWh ({{ currency }}{{ "%.2f" |
-                        format(log_energy_cost) }}){% endif %} | {{ t.total }}: {{ currency }}{{
-                        "%.2f" | format(log_fil_cost + log_energy_cost) }}
+                        log_usage_kwh | round(2) }} kWh ({{ "%.2f" |
+                        format(log_energy_cost) }}{{ currency }}){% endif %} | {{ t.total }}: {{
+                        "%.2f" | format(log_fil_cost + log_energy_cost) }}{{ currency }}
                   # Logbuch-Eintrag
                   - action: logbook.log
                     data:
