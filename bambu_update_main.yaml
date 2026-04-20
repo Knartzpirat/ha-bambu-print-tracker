@@ -77,7 +77,7 @@ blueprint:
           name: "Druckername / Printer Name"
           description: >-
             Name des Druckers. Wird in allen Benachrichtigungen und
-            Log-Einträgen angezeigt (z.B. "Bambu X1C" oder "Your printer's name").
+            Log-Einträgen angezeigt (z.B. "Bambu X1C" oder "Name deines Druckers").
 
             Name of the printer. Shown in all notifications and log
             entries (e.g. "Bambu X1C" or "Your printer's name").
