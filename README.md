@@ -21,7 +21,7 @@ Sent during printing at configurable intervals (e.g. every 5 % or 10 %).
 - Live progress bar on Android
 - Camera snapshot or cover image
 - Up to 3 action buttons (open apps, URIs, or custom actions)
-- **Smart Snooze:** Mute via text input directly on your phone (enter minutes). Uses `input_datetime` helper for safe snoozing (automation stays active) or temporarily disables the automation.
+- **Smart Snooze:** Mute progress notifications via text input directly on your phone (enter minutes). Uses an `input_datetime` helper to suppress notifications for the chosen duration. The automation always stays active — all tracking (energy, nozzle hours, filament) continues in the background. Without helper, only the current notification is dismissed.
 - **Quiet Hours:** Suppress progress notifications during configurable time windows. Completion/failure alerts are always sent.
 
 #### 2. Print Complete Notification (Mobile Push)
