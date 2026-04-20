@@ -131,3 +131,9 @@ Optional detailed log entry saved to the HA Logbook and/or shown as a persistent
 ## Contributing
 
 For bug reports or feature requests, please open an issue in this repository.
+
+---
+
+## Credits
+
+Based on the original blueprint by [@willhaggan](https://github.com/willhaggan/ha-bambu-print-tracker) — thank you for the great foundation! 🙏
