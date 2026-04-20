@@ -41,6 +41,7 @@ blueprint:
           name: Sprache / Language
           description: >-
             Sprache für Benachrichtigungen und Logs.
+
             Language for notifications and logs.
           default: de
           selector:
@@ -61,6 +62,7 @@ blueprint:
           name: "Währungssymbol / Currency Symbol"
           description: >-
             Währungssymbol für Kostenangaben (z.B. €, $, £, CHF).
+
             Currency symbol for cost display.
           default: "€"
           selector:
@@ -75,6 +77,7 @@ blueprint:
           name: "Druckstatus / Print Status"
           description: >-
             Sensor zur Verfolgung des aktuellen Druckstatus.
+
             Sensor tracking the current print status.
           selector:
             entity:
@@ -85,6 +88,7 @@ blueprint:
           name: "Druckfortschritt / Print Progress"
           description: >-
             Sensor zur Anzeige des Fortschritts in Prozent.
+
             Sensor showing print progress in percent.
           selector:
             entity:
@@ -95,6 +99,7 @@ blueprint:
           name: "Aufgabenname / Task Name"
           description: >-
             Sensor mit dem Namen des aktuellen Druckjobs.
+
             Sensor containing the current print job name.
           selector:
             entity:
@@ -105,6 +110,7 @@ blueprint:
           name: "Startzeit / Start Time"
           description: >-
             Sensor, der den Startzeitpunkt des Drucks verfolgt.
+
             Sensor tracking the print start time.
           selector:
             entity:
@@ -115,6 +121,7 @@ blueprint:
           name: "Endzeit / End Time"
           description: >-
             Sensor, der das voraussichtliche Druckende verfolgt.
+
             Sensor tracking the estimated print end time.
           selector:
             entity:
@@ -125,6 +132,7 @@ blueprint:
           name: "Verbleibende Zeit / Remaining Time (Optional)"
           description: >-
             Sensor für die verbleibende Druckzeit (meist in Minuten).
+
             Sensor showing remaining print time (usually in minutes).
           default: ""
           selector:
@@ -137,6 +145,7 @@ blueprint:
           description: >-
             Sensor für das geschätzte Gesamtgewicht des Druckobjekts in Gramm.
             Wird für die Filamentkostenberechnung verwendet.
+
             Sensor for the estimated total weight of the print object in grams.
             Used for filament cost calculation.
           selector:
@@ -150,6 +159,7 @@ blueprint:
           name: "Vorschaubild / Cover Image"
           description: >-
             Bild-Entity für die Druckvorschau (Fallback ohne Kamera).
+
             Image entity for the print preview (fallback without camera).
           selector:
             entity:
@@ -160,6 +170,7 @@ blueprint:
           name: "Drucker-Kamera / Printer Camera (Optional)"
           description: >-
             Live-Kamera für Schnappschüsse in Benachrichtigungen.
+
             Live camera for snapshots in notifications.
           default: ""
           selector:
@@ -176,6 +187,7 @@ blueprint:
           name: "Benachrichtigungsgeräte / Notification Devices"
           description: >-
             Wähle ein oder mehrere mobile Geräte aus.
+
             Select one or more mobile devices.
           selector:
             device:
@@ -185,6 +197,7 @@ blueprint:
           name: "Fortschrittsintervall / Progress Interval (%)"
           description: >-
             Wie oft soll benachrichtigt werden (z. B. alle 5 % oder 10 %).
+
             How often to send notifications (e.g. every 5% or 10%).
           default: 5
           selector:
@@ -199,6 +212,7 @@ blueprint:
           description: >-
             Unterdrückt Fortschrittsmeldungen während dieser Zeiten.
             Abschluss-/Fehlermeldungen werden trotzdem gesendet.
+
             Suppresses progress notifications during these hours.
             Completion/failure alerts are always sent.
           default: false
@@ -208,6 +222,7 @@ blueprint:
           name: "Beginn Ruhezeit / Quiet Start"
           description: >-
             Ab diesem Zeitpunkt werden Fortschrittsmeldungen unterdrückt.
+
             Progress notifications are suppressed from this time.
           default: "22:00:00"
           selector:
@@ -216,6 +231,7 @@ blueprint:
           name: "Ende Ruhezeit / Quiet End"
           description: >-
             Ab diesem Zeitpunkt werden Fortschrittsmeldungen wieder gesendet.
+
             Progress notifications resume from this time.
           default: 07:00:00
           selector:
@@ -229,6 +245,7 @@ blueprint:
           name: "Aktion 1 Titel / Action 1 Title"
           description: >-
             Text für den ersten Benachrichtigungsbutton.
+
             Text for the first notification button.
           default: Bambu App öffnen
           selector:
@@ -245,6 +262,7 @@ blueprint:
           description: >-
             URI/URL die bei Tippen auf Aktion 1 geöffnet wird.
             Voreinstellung wählen oder eigenen Pfad eingeben.
+
             URI/URL opened when Action 1 is tapped.
             Choose a preset or enter a custom path.
           default: app://bbl.intl.bambulab.com
@@ -262,6 +280,7 @@ blueprint:
           name: "Aktion 2 mit Kamera / Action 2 with Camera"
           description: >-
             Text für die zweite Schaltfläche, wenn eine Kamera ausgewählt ist.
+
             Text for the second button when a camera is selected.
           default: Kamera anzeigen
           selector:
@@ -277,6 +296,7 @@ blueprint:
           name: "Aktion 2 ohne Kamera / Action 2 without Camera"
           description: >-
             Text für die zweite Schaltfläche, wenn KEINE Kamera ausgewählt ist.
+
             Text for the second button when NO camera is selected.
           default: Home Assistant öffnen
           selector:
@@ -292,6 +312,7 @@ blueprint:
           description: >-
             URI die geöffnet wird, wenn KEINE Kamera ausgewählt ist.
             Voreinstellung wählen oder eigenen Pfad eingeben.
+
             URI opened when NO camera is selected.
             Choose a preset or enter a custom path.
           default: /
@@ -311,6 +332,7 @@ blueprint:
             Funktion der dritten Schaltfläche.
             „Mute Progress" = Stummschalten per Texteingabe (Minuten).
             „Custom Action" = frei definierbare Aktion.
+
             Function of the third button.
             "Mute Progress" = mute via text input (minutes).
             "Custom Action" = run a custom action.
@@ -330,6 +352,7 @@ blueprint:
             input_datetime Helper (Datum + Uhrzeit). Ermöglicht sicheres
             Stummschalten – die Automatisierung bleibt aktiv. Ohne Helper
             wird die Automatisierung vorübergehend deaktiviert.
+
             input_datetime helper (date + time). Enables safe snoozing –
             the automation stays active. Without helper, the automation is
             temporarily disabled.
@@ -354,6 +377,7 @@ blueprint:
           description: >-
             Aktionssequenz die bei Druck auf die dritte Schaltfläche
             ausgeführt wird. Skripte, Entitäten umschalten usw.
+
             Action sequence executed when the third button is pressed.
             Run scripts, toggle entities, etc.
           default: []
@@ -369,6 +393,7 @@ blueprint:
           description: >-
             Kosten pro Kilogramm Filament in der gewählten Währung.
             Wert 0 = Filamentkostenberechnung deaktiviert.
+
             Cost per kilogram of filament in your selected currency.
             Set to 0 to disable filament cost tracking.
           default: 20.0
@@ -389,6 +414,7 @@ blueprint:
             Erfasst Stromverbrauch und Energiekosten pro Druck.
             Benötigt Smart Plug mit Energiesensor. Bei Deaktivierung
             können die folgenden Felder leer bleiben.
+
             Tracks electricity consumption and energy costs per print.
             Requires a smart plug with energy sensor. When disabled,
             the following fields can be left empty.
@@ -400,6 +426,7 @@ blueprint:
           description: >-
             Fester Stromtarif pro kWh in der gewählten Währung (z. B. 0.28).
             Wird durch den dynamischen Strompreissensor überschrieben.
+
             Static electricity rate per kWh in your currency (e.g. 0.28).
             Overridden by the dynamic price sensor if configured.
           default: 0.25
@@ -414,6 +441,7 @@ blueprint:
           description: >-
             Sensor für dynamische Strompreise (z. B. Tibber, aWATTar).
             Überschreibt den festen Strompreis.
+
             Sensor for dynamic electricity prices (e.g. Tibber, aWATTar).
             Overrides the static electricity price.
           default: ""
@@ -429,6 +457,7 @@ blueprint:
           description: >-
             Sensor für den kumulierten Gesamtverbrauch (kWh) der am
             Drucker angeschlossenen Smart-Steckdose.
+
             Sensor for cumulative total consumption (kWh) of the
             smart plug connected to the printer.
           default: ""
@@ -444,6 +473,7 @@ blueprint:
           description: >-
             input_number Helper zum Speichern des Zählerstands bei Druckstart.
             Die Differenz zum Druckende ergibt den Verbrauch pro Druck.
+
             input_number helper to store the meter reading at print start.
             The difference to print end gives the consumption per print.
           default: ""
@@ -467,6 +497,7 @@ blueprint:
             Speichert nach jedem Druck einen detaillierten Log-Eintrag
             im HA-Logbuch. Für Langzeitspeicherung den Recorder auf
             längere Aufbewahrungszeit konfigurieren (purge_keep_days).
+
             Saves a detailed log entry in the HA logbook after each print.
             For long-term storage, configure the recorder retention
             period (purge_keep_days).
@@ -479,6 +510,7 @@ blueprint:
             Zeigt den Log-Eintrag als persistente Benachrichtigung im
             HA-Benachrichtigungscenter an. Bleibt sichtbar bis manuell
             geschlossen.
+
             Shows the log entry as a persistent notification in the HA
             notification center. Stays visible until manually dismissed.
           default: false
@@ -489,6 +521,7 @@ blueprint:
           description: >-
             input_text Helper (Max. Länge: 255). Logbuch-Einträge werden
             mit dieser Entität verknüpft, letzter Eintrag als Wert.
+
             input_text helper (max length: 255). Logbook entries are
             linked to this entity, last entry stored as value.
           default: ""
@@ -501,6 +534,7 @@ blueprint:
           name: "Düsengröße / Nozzle Size (Optional)"
           description: >-
             Sensor der die aktuelle Düsengröße anzeigt (z. B. „0.4 mm").
+
             Sensor showing the current nozzle size (e.g. "0.4 mm").
           default: ""
           selector:
@@ -514,6 +548,7 @@ blueprint:
             Bambu Lab „Aktiver Slot"-Sensor. Wechselt während des Drucks
             zwischen Filamentname und „Empty". Alle Materialien werden
             automatisch gesammelt. Benötigt den Filament-Log-Helper.
+
             Bambu Lab "Active Slot" sensor. Alternates between the
             filament name and "Empty" during printing. All materials
             are collected automatically. Requires the filament log helper.
@@ -529,6 +564,7 @@ blueprint:
             input_text Helper (Max. Länge: 255) zum Sammeln der
             verwendeten Filamente. Wird bei Druckstart geleert und
             bei jedem Filamentwechsel aktualisiert.
+
             input_text helper (max length: 255) to collect filaments
             used during a print. Cleared at print start and updated
             on each filament change.
@@ -543,6 +579,7 @@ blueprint:
           description: >-
             Sensor für die Druckbetttemperatur. Tipp: HA-Statistics-
             Sensor mit mean_type=mean für echten Durchschnittswert.
+
             Sensor for the print bed temperature. Tip: create a HA
             statistics sensor with mean_type=mean for a true average.
           default: ""
@@ -557,6 +594,7 @@ blueprint:
           name: "Düse 1 Temperatur / Nozzle 1 Temperature (Optional)"
           description: >-
             Sensor für die Düse-1-Temperatur (Ø-Wert empfohlen).
+
             Sensor for nozzle 1 temperature (average recommended).
           default: ""
           selector:
@@ -570,6 +608,7 @@ blueprint:
           name: "Düse 2 Temperatur / Nozzle 2 Temperature (Optional)"
           description: >-
             Sensor für die Düse-2-Temperatur.
+
             Sensor for nozzle 2 temperature.
           default: ""
           selector:
@@ -583,6 +622,7 @@ blueprint:
           name: "Druckbett-Typ / Bed Type (Optional)"
           description: >-
             Sensor der den aktuellen Druckbett-Typ anzeigt.
+
             Sensor showing the current print bed type/surface.
           default: ""
           selector:
@@ -596,6 +636,7 @@ blueprint:
             Sensor der anzeigt ob ein Werkzeugmodul angeschlossen ist
             (z. B. Laser, Schneider). Ohne aktives Modul wird dieses
             Feld im Log ausgelassen.
+
             Sensor showing whether a tool module is attached
             (e.g. laser, cutter). If no module is active, this field
             is omitted from the log.
@@ -617,35 +658,112 @@ blueprint:
         enable_nozzle_tracking:
           name: "Düsen-Tracking / Enable Nozzle Tracking"
           description: >-
-            Zählt Betriebsstunden beider Düsen und sendet eine
-            Wartungserinnerung bei Erreichen des Intervalls. Benötigt
-            input_number Helper. Bei Tool-Module-State „laser"/„cutter"
-            werden keine Stunden gezählt.
-            Counts operating hours for both nozzles and sends a
-            maintenance reminder when the interval is reached. Requires
-            input_number helpers. When tool module state is "laser" or
-            "cutter", no hours are counted.
+            Zählt Betriebsstunden pro Düse basierend auf der
+            Zieltemperatur. Sendet Wartungserinnerung bei Erreichen
+            des Intervalls.
+
+            Counts operating hours per nozzle based on target
+            temperature. Sends maintenance reminder when interval
+            is reached.
           default: false
           selector:
             boolean: {}
+        nozzle_temp_threshold:
+          name: "Temperatur-Schwellwert / Temp Threshold (°C)"
+          description: >-
+            Ab dieser Zieltemperatur wird die Düse als aktiv gewertet
+            und Betriebsstunden werden gezählt.
+
+            Target temperature above which the nozzle is considered
+            active and operating hours are counted.
+          default: 100
+          selector:
+            number:
+              min: 1
+              max: 300
+              step: 1
+              unit_of_measurement: "°C"
+              mode: box
         is_h2d_printer:
           name: "H2D Drucker / H2D Printer (Dual Nozzle)"
           description: >-
             Aktivieren für Bambu H2D. „Düse 1/2" wird in
             Benachrichtigungen durch „Linke/Rechte Düse" ersetzt.
+
             Enable for Bambu H2D. "Nozzle 1/2" is replaced by
             "Left/Right Nozzle" in notifications and logs.
           default: false
           selector:
             boolean: {}
+        nozzle_1_target_temp_sensor:
+          name: "Düse 1 Zieltemperatur / Nozzle 1 Target Temp"
+          description: >-
+            Sensor für die Zieltemperatur der Düse 1 (H2D: Linke Düse).
+            Stunden werden gezählt solange Zieltemp. > Schwellwert.
+
+            Sensor for nozzle 1 target temperature (H2D: Left Nozzle).
+            Hours are counted while target temp > threshold.
+          default: ""
+          selector:
+            entity:
+              domain:
+                - sensor
+              device_class:
+                - temperature
+              multiple: false
+        nozzle_2_target_temp_sensor:
+          name: "Düse 2 Zieltemperatur / Nozzle 2 Target Temp"
+          description: >-
+            Sensor für die Zieltemperatur der Düse 2 (H2D: Rechte Düse).
+
+            Sensor for nozzle 2 target temperature (H2D: Right Nozzle).
+          default: ""
+          selector:
+            entity:
+              domain:
+                - sensor
+              device_class:
+                - temperature
+              multiple: false
+        nozzle_1_heating_start_helper:
+          name: "Düse 1 Heizstart / Nozzle 1 Heat Start Helper"
+          description: >-
+            input_number Helper (min: 0, max: 9999999999, step: 1).
+            Speichert intern den Unix-Zeitstempel des Heizbeginns.
+            Nicht manuell ändern.
+
+            input_number helper (min: 0, max: 9999999999, step: 1).
+            Internally stores the Unix timestamp of heating start.
+            Do not change manually.
+          default: ""
+          selector:
+            entity:
+              domain:
+                - input_number
+              multiple: false
+        nozzle_2_heating_start_helper:
+          name: "Düse 2 Heizstart / Nozzle 2 Heat Start Helper"
+          description: >-
+            input_number Helper (min: 0, max: 9999999999, step: 1).
+            Speichert den Unix-Zeitstempel des Heizbeginns der Düse 2.
+
+            input_number helper (min: 0, max: 9999999999, step: 1).
+            Stores the Unix timestamp of nozzle 2 heating start.
+          default: ""
+          selector:
+            entity:
+              domain:
+                - input_number
+              multiple: false
         nozzle_1_hours_helper:
           name: "Düse 1 Betriebsstunden / Nozzle 1 Hours Helper"
           description: >-
             input_number Helper (min: 0, max: 10000, step: 0.01, unit: h).
             Kumulierte Betriebsstunden der Düse 1 (H2D: Linke Düse).
-            Wird nach jedem Druck um die Druckdauer erhöht.
+            Wird automatisch erhöht solange die Zieltemperatur > Schwellwert.
+
             Cumulative operating hours for nozzle 1 (H2D: Left Nozzle).
-            Automatically incremented by print duration after each print.
+            Automatically incremented while target temp > threshold.
           default: ""
           selector:
             entity:
@@ -656,9 +774,12 @@ blueprint:
           name: "Düse 2 Betriebsstunden / Nozzle 2 Hours Helper"
           description: >-
             input_number Helper für kumulierte Betriebsstunden der
-            Düse 2 (H2D: Rechte Düse).
+            Düse 2 (H2D: Rechte Düse). Wird automatisch erhöht
+            solange die Zieltemperatur > Schwellwert.
+
             input_number helper for cumulative operating hours of
-            nozzle 2 (H2D: Right Nozzle).
+            nozzle 2 (H2D: Right Nozzle). Automatically incremented
+            while target temp > threshold.
           default: ""
           selector:
             entity:
@@ -669,6 +790,7 @@ blueprint:
           name: "Wartungsintervall Düse 1 / Nozzle 1 Interval (h)"
           description: >-
             Wartungserinnerung nach X Betriebsstunden.
+
             Maintenance reminder after X operating hours.
           default: 200
           selector:
@@ -682,6 +804,7 @@ blueprint:
           name: "Wartungsintervall Düse 2 / Nozzle 2 Interval (h)"
           description: >-
             Wartungsintervall für Düse 2 in Betriebsstunden.
+
             Maintenance interval for nozzle 2 in operating hours.
           default: 200
           selector:
@@ -696,6 +819,7 @@ blueprint:
           description: >-
             input_datetime Helper (Datum + Uhrzeit) zum Zurückstellen
             der Wartungserinnerung für Düse 1.
+
             input_datetime helper (date + time) to postpone the
             maintenance reminder for nozzle 1.
           default: ""
@@ -709,6 +833,7 @@ blueprint:
           description: >-
             input_datetime Helper zum Zurückstellen der
             Wartungserinnerung für Düse 2.
+
             input_datetime helper to postpone the maintenance
             reminder for nozzle 2.
           default: ""
@@ -849,6 +974,7 @@ variables:
   printer_tool_module_sensor_var: !input printer_tool_module_sensor
   # --- Neue Variablen: Düsen-Wartung ---
   enable_nozzle_tracking_var: !input enable_nozzle_tracking
+  nozzle_temp_threshold_var: !input nozzle_temp_threshold
   is_h2d_printer_var: !input is_h2d_printer
   nozzle_1_label: "{{ t.left_nozzle if is_h2d_printer_var else t.nozzle_1 }}"
   nozzle_2_label: "{{ t.right_nozzle if is_h2d_printer_var else t.nozzle_2 }}"
@@ -858,6 +984,10 @@ variables:
   nozzle_2_maintenance_interval_var: !input nozzle_2_maintenance_interval
   nozzle_1_snooze_helper_var: !input nozzle_1_snooze_helper
   nozzle_2_snooze_helper_var: !input nozzle_2_snooze_helper
+  nozzle_1_target_temp_var: !input nozzle_1_target_temp_sensor
+  nozzle_2_target_temp_var: !input nozzle_2_target_temp_sensor
+  nozzle_1_heating_start_var: !input nozzle_1_heating_start_helper
+  nozzle_2_heating_start_var: !input nozzle_2_heating_start_helper
 
 mode: parallel
 
@@ -891,6 +1021,42 @@ trigger:
          states(printer_status_var) == 'running' and
          states(printer_active_slot_sensor_var) not in ['unknown', 'unavailable', '', 'Empty', 'empty'] }}
     id: Filament_Change
+  # --- Düse 1: Heizung gestartet (Zieltemp > Schwellwert, noch kein Startzeit gespeichert) ---
+  - trigger: template
+    value_template: >-
+      {{ enable_nozzle_tracking_var and
+         nozzle_1_target_temp_var != '' and
+         nozzle_1_heating_start_var != '' and
+         states(nozzle_1_target_temp_var) | float(0) > nozzle_temp_threshold_var | float(100) and
+         states(nozzle_1_heating_start_var) | float(0) == 0 }}
+    id: Nozzle_1_Heat_Start
+  # --- Düse 1: Heizung gestoppt (Zieltemp ≤ Schwellwert, Startzeit vorhanden) ---
+  - trigger: template
+    value_template: >-
+      {{ enable_nozzle_tracking_var and
+         nozzle_1_target_temp_var != '' and
+         nozzle_1_heating_start_var != '' and
+         states(nozzle_1_target_temp_var) | float(0) <= nozzle_temp_threshold_var | float(100) and
+         states(nozzle_1_heating_start_var) | float(0) > 0 }}
+    id: Nozzle_1_Heat_Stop
+  # --- Düse 2: Heizung gestartet ---
+  - trigger: template
+    value_template: >-
+      {{ enable_nozzle_tracking_var and
+         nozzle_2_target_temp_var != '' and
+         nozzle_2_heating_start_var != '' and
+         states(nozzle_2_target_temp_var) | float(0) > nozzle_temp_threshold_var | float(100) and
+         states(nozzle_2_heating_start_var) | float(0) == 0 }}
+    id: Nozzle_2_Heat_Start
+  # --- Düse 2: Heizung gestoppt ---
+  - trigger: template
+    value_template: >-
+      {{ enable_nozzle_tracking_var and
+         nozzle_2_target_temp_var != '' and
+         nozzle_2_heating_start_var != '' and
+         states(nozzle_2_target_temp_var) | float(0) <= nozzle_temp_threshold_var | float(100) and
+         states(nozzle_2_heating_start_var) | float(0) > 0 }}
+    id: Nozzle_2_Heat_Stop
 
 # =========================================================================
 # Aktionen
@@ -1258,6 +1424,82 @@ action:
                                 {{ (existing_filaments ~ ', ' ~ current_filament) if existing_filaments != '' else current_filament }}
 
       # -----------------------------------------------------------------------
+      # Düse 1 – Heizung gestartet → Zeitstempel speichern
+      # -----------------------------------------------------------------------
+      - conditions:
+          - condition: trigger
+            id: Nozzle_1_Heat_Start
+        sequence:
+          - action: input_number.set_value
+            target:
+              entity_id: "{{ nozzle_1_heating_start_var }}"
+            data:
+              value: "{{ now().timestamp() | round(0) }}"
+
+      # -----------------------------------------------------------------------
+      # Düse 1 – Heizung gestoppt → Stunden berechnen und addieren
+      # -----------------------------------------------------------------------
+      - conditions:
+          - condition: trigger
+            id: Nozzle_1_Heat_Stop
+        sequence:
+          - variables:
+              elapsed_h: >-
+                {{ ((now().timestamp() - states(nozzle_1_heating_start_var) | float(0)) / 3600) | round(2) }}
+          - choose:
+              - conditions: "{{ nozzle_1_hours_helper_var != '' and elapsed_h > 0 }}"
+                sequence:
+                  - action: input_number.set_value
+                    target:
+                      entity_id: "{{ nozzle_1_hours_helper_var }}"
+                    data:
+                      value: >-
+                        {{ (states(nozzle_1_hours_helper_var) | float(0) + elapsed_h) | round(2) }}
+          - action: input_number.set_value
+            target:
+              entity_id: "{{ nozzle_1_heating_start_var }}"
+            data:
+              value: "0"
+
+      # -----------------------------------------------------------------------
+      # Düse 2 – Heizung gestartet → Zeitstempel speichern
+      # -----------------------------------------------------------------------
+      - conditions:
+          - condition: trigger
+            id: Nozzle_2_Heat_Start
+        sequence:
+          - action: input_number.set_value
+            target:
+              entity_id: "{{ nozzle_2_heating_start_var }}"
+            data:
+              value: "{{ now().timestamp() | round(0) }}"
+
+      # -----------------------------------------------------------------------
+      # Düse 2 – Heizung gestoppt → Stunden berechnen und addieren
+      # -----------------------------------------------------------------------
+      - conditions:
+          - condition: trigger
+            id: Nozzle_2_Heat_Stop
+        sequence:
+          - variables:
+              elapsed_h: >-
+                {{ ((now().timestamp() - states(nozzle_2_heating_start_var) | float(0)) / 3600) | round(2) }}
+          - choose:
+              - conditions: "{{ nozzle_2_hours_helper_var != '' and elapsed_h > 0 }}"
+                sequence:
+                  - action: input_number.set_value
+                    target:
+                      entity_id: "{{ nozzle_2_hours_helper_var }}"
+                    data:
+                      value: >-
+                        {{ (states(nozzle_2_hours_helper_var) | float(0) + elapsed_h) | round(2) }}
+          - action: input_number.set_value
+            target:
+              entity_id: "{{ nozzle_2_heating_start_var }}"
+            data:
+              value: "0"
+
+      # -----------------------------------------------------------------------
       # Fortschritts-Update
       # -----------------------------------------------------------------------
       - conditions:
@@ -1535,50 +1777,56 @@ action:
                         }}"
 
           # =====================================================================
-          # NEU: Düsen-Betriebsstunden aktualisieren
+          # Düsen-Heizzeiten flushen (falls Düse bei Druckende noch heiß)
           # =====================================================================
-          - variables:
-              print_duration_hours: >-
-                {{ ((states(printer_end_time_var) | as_timestamp(0) -
-                states(printer_start_time_var) | as_timestamp(0)) / 3600) |
-                round(4) }}
-              tool_module_active: >-
-                {% if printer_tool_module_sensor_var != ''
-                   and states(printer_tool_module_sensor_var) not in ['unknown', 'unavailable', '', 'none', 'None'] %}
-                  true
-                {% else %}
-                  false
-                {% endif %}
-          # Düse 1 – Stunden addieren (nur wenn kein Werkzeugmodul aktiv war)
+          # Düse 1 – offene Heizsession abschließen
           - choose:
               - conditions: >-
                   {{ enable_nozzle_tracking_var
-                     and nozzle_1_hours_helper_var != ''
-                     and not tool_module_active }}
+                     and nozzle_1_heating_start_var != ''
+                     and states(nozzle_1_heating_start_var) | float(0) > 0 }}
                 sequence:
+                  - variables:
+                      elapsed_h: >-
+                        {{ ((now().timestamp() - states(nozzle_1_heating_start_var) | float(0)) / 3600) | round(2) }}
+                  - choose:
+                      - conditions: "{{ nozzle_1_hours_helper_var != '' and elapsed_h > 0 }}"
+                        sequence:
+                          - action: input_number.set_value
+                            target:
+                              entity_id: "{{ nozzle_1_hours_helper_var }}"
+                            data:
+                              value: >-
+                                {{ (states(nozzle_1_hours_helper_var) | float(0) + elapsed_h) | round(2) }}
                   - action: input_number.set_value
                     target:
-                      entity_id: "{{ nozzle_1_hours_helper_var }}"
+                      entity_id: "{{ nozzle_1_heating_start_var }}"
                     data:
-                      value: >-
-                        {{ (states(nozzle_1_hours_helper_var) | string |
-                        replace(',', '.') | float(0)
-                           + print_duration_hours) | round(4) }}
-          # Düse 2 – Stunden addieren (nur wenn kein Werkzeugmodul aktiv war)
+                      value: "0"
+          # Düse 2 – offene Heizsession abschließen
           - choose:
               - conditions: >-
                   {{ enable_nozzle_tracking_var
-                     and nozzle_2_hours_helper_var != ''
-                     and not tool_module_active }}
+                     and nozzle_2_heating_start_var != ''
+                     and states(nozzle_2_heating_start_var) | float(0) > 0 }}
                 sequence:
+                  - variables:
+                      elapsed_h: >-
+                        {{ ((now().timestamp() - states(nozzle_2_heating_start_var) | float(0)) / 3600) | round(2) }}
+                  - choose:
+                      - conditions: "{{ nozzle_2_hours_helper_var != '' and elapsed_h > 0 }}"
+                        sequence:
+                          - action: input_number.set_value
+                            target:
+                              entity_id: "{{ nozzle_2_hours_helper_var }}"
+                            data:
+                              value: >-
+                                {{ (states(nozzle_2_hours_helper_var) | float(0) + elapsed_h) | round(2) }}
                   - action: input_number.set_value
                     target:
-                      entity_id: "{{ nozzle_2_hours_helper_var }}"
+                      entity_id: "{{ nozzle_2_heating_start_var }}"
                     data:
-                      value: >-
-                        {{ (states(nozzle_2_hours_helper_var) | string |
-                        replace(',', '.') | float(0)
-                           + print_duration_hours) | round(4) }}
+                      value: "0"
 
           # =====================================================================
           # NEU: Wartungserinnerung Düse 1 prüfen und senden
